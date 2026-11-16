@@ -26,6 +26,7 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'same:confirm_password'],
             'confirm_password' => ['required', 'string'],
             'role' => ['required', Rule::in(['user', 'vendor'])],
+            'terms' => ['required', 'accepted'],
         ]);
 
         $attributes = [
