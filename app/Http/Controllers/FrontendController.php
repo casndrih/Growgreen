@@ -27,6 +27,10 @@ class FrontendController extends Controller
             ->limit(10)
             ->get();
 
+        if ($newProducts->isEmpty()) {
+            $newProducts = FoodProduct::latest()->limit(10)->get();
+        }
+
         $productData = collect();
 
         foreach ($newProducts as $product) {
@@ -95,6 +99,10 @@ class FrontendController extends Controller
 
         $vendors = Vendor::whereIn('id', $popularVendors)->get();
 
+        if ($vendors->isEmpty()) {
+            $vendors = Vendor::latest()->limit(8)->get();
+        }
+
         return view('Frontend.home.index', compact('groceries', 'categoryData', 'productData', 'vendors'));
     }
 
@@ -115,8 +123,6 @@ class FrontendController extends Controller
 
     public function unsplash($name)
     {
-        $client = new Client;
-
         if (! $this->unsplashApiKey) {
             return ['name' => $name, 'image' => null];
         }
