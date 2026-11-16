@@ -11,7 +11,7 @@ on:
     branches: [main, master]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   laravel-tests:
@@ -55,19 +55,6 @@ jobs:
       - name: Prepare environment
         run: cp .env.example .env
 
-      - name: Refresh vulnerable PHP dependencies
-        run: composer update --with-all-dependencies --no-interaction --prefer-dist
-
-      - name: Commit refreshed Composer lockfile
-        run: |
-          if ! git diff --quiet -- composer.lock; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add composer.lock
-            git commit -m "chore: update vulnerable PHP dependencies"
-            git push
-          fi
-
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
@@ -85,19 +72,6 @@ jobs:
 
       - name: Check dependency security
         run: composer audit
-
-      - name: Format changed PHP files
-        run: vendor/bin/pint app/Http/Controllers/PayPalController.php app/Http/Controllers/SearchController.php app/Models/OrderHistory.php
-
-      - name: Commit PHP formatting fixes
-        run: |
-          if ! git diff --quiet -- app/Http/Controllers/PayPalController.php app/Http/Controllers/SearchController.php app/Models/OrderHistory.php; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add app/Http/Controllers/PayPalController.php app/Http/Controllers/SearchController.php app/Models/OrderHistory.php
-            git commit -m "style: format updated PHP controllers and models"
-            git push
-          fi
 
       - name: Check PHP style
         run: vendor/bin/pint --test
