@@ -33,14 +33,13 @@
           Purchase
         </button>
       </div>
-      </form>
     </div>
   </div>
   
   <div class="max-w-md mx-auto bg-white shadow-sm rounded-md overflow-hidden">
     <div class="px-4 py-3">
       <h2 class="text-lg font-medium text-gray-900">Vendor</h2>
-      <img src="{{ $vendor->image }}" alt="Vendor Image" class="w-16 h-16 object-cover rounded-full">
+      <img src="{{ $vendor->profile_picture_url }}" alt="Vendor Image" class="w-16 h-16 object-cover rounded-full">
       <p class="text-lg font-medium text-gray-900">{{ $vendor->name }}</p>
       <p class="text-gray-500">{{ $vendor->description }}</p>
       <p class="text-gray-500">{{ $vendor->address }}</p>
@@ -67,8 +66,7 @@
       quantityInput.val(parseInt(quantityInput.val()) + 1);
     });
 
-    $('.add-to-cart').on('click', function(e) {
-      e.preventDefault();
+    function addCurrentProductToCart(onSuccess) {
       const productID = $('input[name="product_id"]').val();
       const quantity = $('.quantity-input').val();
 
@@ -81,13 +79,25 @@
           quantity: quantity
         },
         success: function(response) {
-          showToast('Successfully added to cart');
-          console.log(response); // Handle the success response here
+          showToast(response.message || 'Successfully added to cart');
+          if (typeof onSuccess === 'function') onSuccess();
         },
-        error: function(xhr, status, error) {
-          showToast('Failed to add to cart');
-          console.error(error); // Handle the error here
+        error: function(xhr) {
+          const message = xhr.responseJSON?.message || 'Unable to add this item to your cart.';
+          showToast(message);
         }
+      });
+    }
+
+    $('.add-to-cart').on('click', function(e) {
+      e.preventDefault();
+      addCurrentProductToCart();
+    });
+
+    $('.purchase').on('click', function(e) {
+      e.preventDefault();
+      addCurrentProductToCart(function() {
+        window.location.href = '{{ route('cart.index') }}';
       });
     });
 
