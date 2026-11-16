@@ -52,4 +52,5 @@ Route::middleware('auth:vendor')->prefix('vendor')->group(function () {
     Route::post('/products', [VendorController::class, 'storeProduct'])->name('vendor.products.store');
     Route::put('/products/{product}', [VendorController::class, 'updateProduct'])->name('vendor.products.update');
     Route::delete('/products/{product}', [VendorController::class, 'destroyProduct'])->name('vendor.products.destroy');
+    Route::patch('/orders/{order}/status', [VendorController::class, 'updateOrderStatus'])->name('vendor.orders.status');
 });
