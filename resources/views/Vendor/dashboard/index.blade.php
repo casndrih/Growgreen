@@ -19,6 +19,17 @@
         @if(session($key))<div class="rounded-lg bg-{{ $color }}-50 p-4 text-{{ $color }}-800">{{ session($key) }}</div>@endif
     @endforeach
     @if($errors->any())<div class="rounded-lg bg-red-50 p-4 text-red-800"><ul class="list-disc pl-5">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
+    <section class="rounded-xl border bg-white p-5 shadow-sm">
+        <h2 class="text-lg font-semibold">Store profile</h2>
+        <form class="mt-4 grid gap-4 md:grid-cols-2" method="POST" action="{{ route('vendor.profile.update') }}" enctype="multipart/form-data">
+            @csrf
+            <label class="text-sm font-medium">Store address<input name="address" value="{{ old('address', auth('vendor')->user()->address) }}" class="mt-1 w-full rounded-lg border-gray-300"></label>
+            <label class="text-sm font-medium">Store description<textarea name="description" rows="2" class="mt-1 w-full rounded-lg border-gray-300">{{ old('description', auth('vendor')->user()->description) }}</textarea></label>
+            <label class="text-sm font-medium">Profile image<input type="file" name="profile_picture" accept="image/*" class="mt-1 block w-full text-sm"></label>
+            <label class="text-sm font-medium">Cover image<input type="file" name="cover_picture" accept="image/*" class="mt-1 block w-full text-sm"></label>
+            <div class="md:col-span-2"><button class="rounded-lg bg-green-700 px-5 py-3 font-semibold text-white hover:bg-green-800">Save store profile</button></div>
+        </form>
+    </section>
     <section class="grid gap-4 sm:grid-cols-3">
         @foreach($stats as $label => $value)
             <article class="rounded-xl border bg-white p-5 shadow-sm"><p class="text-sm capitalize text-gray-500">{{ str_replace('_', ' ', $label) }}</p><p class="mt-2 text-3xl font-bold">{{ number_format($value) }}</p></article>
