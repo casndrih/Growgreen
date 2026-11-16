@@ -26,10 +26,35 @@ class VendorController extends Controller
         return view('Vendor.dashboard.index', compact('products', 'orders', 'categories', 'stats'));
     }
 
-    public function store(Request $request)
+    public function updateProfile(Request $request)
     {
-        return redirect()->route('vendor.dashboard')
-            ->with('info', 'Your vendor account is already registered. Manage your products from this dashboard.');
+        $vendor = auth('vendor')->user();
+
+        $validated = $request->validate([
+            'address' => ['nullable', 'string', 'max:1000'],
+            'description' => ['nullable', 'string', 'max:5000'],
+            'profile_picture' => ['nullable', 'image', 'max:5120'],
+            'cover_picture' => ['nullable', 'image', 'max:10240'],
+        ]);
+
+        foreach (['profile_picture' => 'profile_picture', 'cover_picture' => 'cover_picture'] as $field => $attribute) {
+            if ($request->hasFile($field)) {
+                $oldImage = $vendor->{$attribute};
+                if ($oldImage && ! filter_var($oldImage, FILTER_VALIDATE_URL)) {
+                    Storage::disk('public')->delete($oldImage);
+                }
+                $validated[$attribute] = $request->file($field)->store('vendors', 'public');
+            }
+        }
+
+        $vendor->update([
+            'address' => $validated['address'] ?? null,
+            'description' => $validated['description'] ?? null,
+            'profile_picture' => $validated['profile_picture'] ?? $vendor->profile_picture,
+            'cover_picture' => $validated['cover_picture'] ?? $vendor->cover_picture,
+        ]);
+
+        return redirect()->route('vendor.dashboard')->with('success', 'Store profile updated.');
     }
 
     public function storeProduct(Request $request)
