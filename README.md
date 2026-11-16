@@ -28,7 +28,7 @@ Originally developed for the 2023 APEC App Challenge. This repository has been p
 
 ## Requirements
 
-- PHP `^8.2`
+- PHP `^8.4.1`
 - Composer 2
 - MySQL 8 / MariaDB
 - Node.js 18+ (for asset build)
