@@ -1,55 +1,45 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\\Http\\Controllers;
 
-use App\Models\Admin;
-use App\Models\User;
-use App\Models\Vendor;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+use Illuminate\\Http\\Request;
+use Illuminate\\Support\\Facades\\Auth;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
 
-        if (Auth::attempt($credentials)) {
-            // Authentication passed
-            $user = Auth::user();
+        foreach (['admin', 'vendor', 'web'] as $guard) {
+            if (Auth::guard($guard)->attempt($credentials, $request->boolean('remember'))) {
+                $request->session()->regenerate();
 
-            if ($user instanceof Admin) {
-                // Redirect the admin to the admin panel
-                Session::flash('success', 'Successfully Login!');
-
-                return redirect()->route('admin.dashboard');
-
-            } elseif ($user instanceof Vendor) {
-                // Redirect the vendor to the vendor panel
-                Session::flash('success', 'Successfully Login!');
-
-                return redirect()->route('vendor.dashboard');
-
-            } elseif ($user instanceof User) {
-                // Redirect the user (buyer) to the homepage
-                Session::flash('success', 'Successfully Login!');
-
-                return redirect()->route('user.profile');
+                return match ($guard) {
+                    'admin' => redirect()->intended(route('admin.dashboard')),
+                    'vendor' => redirect()->intended(route('vendor.dashboard')),
+                    default => redirect()->intended(route('user.profile')),
+                };
             }
         }
 
-        // Authentication failed, handle invalid credentials
-        Session::flash('error', 'Invalid credentials!');
-
-        return back();
+        return back()
+            ->withErrors(['email' => 'The supplied credentials are invalid.'])
+            ->onlyInput('email');
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        Session::flash('success', 'Successfully Logout!');
+        foreach (['web', 'vendor', 'admin'] as $guard) {
+            Auth::guard($guard)->logout();
+        }
 
-        return redirect()->route('home');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home')->with('success', 'Successfully logged out.');
     }
 }
