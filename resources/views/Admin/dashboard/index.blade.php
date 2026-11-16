@@ -39,6 +39,21 @@
         </div>
     </section>
     <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div class="border-b px-5 py-4"><h2 class="font-semibold">Recent payments</h2><p class="mt-1 text-xs text-gray-500">Review completed, pending and refund-required PayPal transactions.</p></div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-gray-500"><tr><th class="px-5 py-3">Reference</th><th class="px-5 py-3">Customer</th><th class="px-5 py-3">Amount</th><th class="px-5 py-3">Status</th><th class="px-5 py-3">Date</th></tr></thead>
+                <tbody class="divide-y">
+                @forelse($recentPayments as $payment)
+                    <tr><td class="px-5 py-3 font-mono text-xs">{{ $payment->reference }}</td><td class="px-5 py-3">{{ $payment->user?->name ?? '—' }}</td><td class="px-5 py-3">{{ number_format((float) $payment->amount, 2) }} {{ $payment->currency }}</td><td class="px-5 py-3">{{ str_replace('_', ' ', $payment->status) }}</td><td class="px-5 py-3">{{ $payment->created_at?->format('d M Y H:i') }}</td></tr>
+                @empty
+                    <tr><td colspan="5" class="px-5 py-8 text-center text-gray-500">No payments recorded yet.</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
         <div class="border-b px-5 py-4"><h2 class="font-semibold">Latest vendors</h2></div>
         <div class="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-4">
             @forelse($recentVendors as $vendor)
