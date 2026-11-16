@@ -19,11 +19,13 @@ class AdminController extends Controller
             'products' => FoodProduct::count(),
             'active_orders' => Order::count(),
             'completed_orders' => OrderHistory::count(),
+            'payments_requiring_refund' => Payment::where('status', 'requires_refund')->count(),
         ];
 
         $recentOrders = Order::with(['user', 'vendor'])->latest()->limit(10)->get();
         $recentVendors = Vendor::latest()->limit(8)->get();
+        $recentPayments = Payment::with('user')->latest()->limit(10)->get();
 
-        return view('Admin.dashboard.index', compact('stats', 'recentOrders', 'recentVendors'));
+        return view('Admin.dashboard.index', compact('stats', 'recentOrders', 'recentVendors', 'recentPayments'));
     }
 }
