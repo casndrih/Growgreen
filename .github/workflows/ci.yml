@@ -56,6 +56,9 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: Refresh npm lockfile metadata
+        run: npm install --package-lock-only --ignore-scripts
+
       - name: Install frontend dependencies
         run: npm ci
 
