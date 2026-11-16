@@ -44,7 +44,7 @@
             <label class="text-sm font-medium">Price<input required type="number" min="0.01" step="0.01" name="price" value="{{ old('price') }}" class="mt-1 w-full rounded-lg border-gray-300"></label>
             <label class="text-sm font-medium">Stock<input required type="number" min="0" name="stock" value="{{ old('stock', 0) }}" class="mt-1 w-full rounded-lg border-gray-300"></label>
             <label class="text-sm font-medium md:col-span-2">Description<textarea name="description" rows="3" class="mt-1 w-full rounded-lg border-gray-300">{{ old('description') }}</textarea></label>
-            <label class="text-sm font-medium">Product image<input type="file" name="image" accept="image/*" class="mt-1 block w-full text-sm"></label>
+            <label class="text-sm font-medium">Product image<input required type="file" name="image" accept="image/*" class="mt-1 block w-full text-sm"></label>
             <div class="flex items-end"><button class="rounded-lg bg-green-700 px-5 py-3 font-semibold text-white hover:bg-green-800">Add product</button></div>
         </form>
     </section>
@@ -61,7 +61,7 @@
                                 <input required name="name" value="{{ $product->name }}" class="rounded border-gray-300 text-sm" aria-label="Product name">
                                 <input required type="number" min="0.01" step="0.01" name="price" value="{{ $product->price }}" class="rounded border-gray-300 text-sm" aria-label="Price">
                                 <input required type="number" min="0" name="stock" value="{{ $product->stock }}" class="rounded border-gray-300 text-sm" aria-label="Stock">
-                                <select name="category_id" class="rounded border-gray-300 text-sm"><option value="">Uncategorised</option>@foreach($categories as $category)<option value="{{ $category->id }}" @selected($product->category_id == $category->id)>{{ $category->name }}</option>@endforeach</select>
+                                <select required name="category_id" class="rounded border-gray-300 text-sm"><option value="">Uncategorised</option>@foreach($categories as $category)<option value="{{ $category->id }}" @selected($product->category_id == $category->id)>{{ $category->name }}</option>@endforeach</select>
                                 <textarea name="description" rows="2" class="rounded border-gray-300 text-sm" aria-label="Description">{{ $product->description }}</textarea>
                                 <input type="file" name="image" accept="image/*" class="text-xs">
                                 <button class="rounded bg-green-700 px-3 py-2 text-xs font-semibold text-white">Save changes</button>
