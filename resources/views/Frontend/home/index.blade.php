@@ -13,6 +13,11 @@
           <img src="{{ $grocery['urls']['regular'] }}" class="absolute block w-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="{{ $grocery['alt_description'] }}">
         </div>
       @endforeach
+      @if(count($groceries) === 0)
+        <div class="flex h-40 items-center justify-center bg-gradient-to-r from-green-800 to-lime-600 px-6 text-center text-white md:h-60 lg:h-96">
+          <div><p class="text-sm font-semibold uppercase tracking-widest text-lime-100">Fresh food, local markets</p><h2 class="mt-3 text-3xl font-bold md:text-5xl">Good food starts here.</h2><p class="mt-3 text-sm text-green-50 md:text-base">Discover fresh groceries from your favourite local vendors.</p></div>
+        </div>
+      @endif
     </div>
     <!-- Slider indicators -->
     <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
@@ -32,7 +37,7 @@
         @foreach ($categoryData as $item)
             <div class="flex flex-col text-center justify-center bg-white flex-grow-0 flex-shrink-0 w-20 rounded-lg shadow-md">
                 <div class="relative">
-                    <img class="w-full h-20 rounded-md object-cover" src="{{ $item['image'] }}">
+                    @if($item['image'])<img class="w-full h-20 rounded-md object-cover" src="{{ $item['image'] }}" alt="{{ $item['name'] }}">@else<div class="flex h-20 items-center justify-center rounded-md bg-gradient-to-br from-lime-100 to-green-200 px-2 text-xs font-semibold text-green-900">{{ $item['name'] }}</div>@endif
                     <div class="absolute inset-0 flex items-center justify-center">
                         <div class="text-lg font-medium text-white line-clamp-2">{{ $item['name'] }}</div>
                     </div>
@@ -65,7 +70,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><g><rect fill="none" height="24" width="24"/><path fill-rule="evenodd" d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z"/></g></svg>
       </a>
       <a href="{{ route('product.show', ['id' => $foodProduct['id']]) }}" class="cursor-pointer">
-      <img src="{{ $foodProduct['image'] }}" alt="Food Product" class="w-full h-40 object-cover rounded-t-lg">
+      @if($foodProduct['image'])<img src="{{ $foodProduct['image'] }}" alt="{{ $foodProduct['name'] }}" class="w-full h-40 object-cover rounded-t-lg">@else<div class="flex h-40 items-center justify-center rounded-t-lg bg-gradient-to-br from-lime-100 to-green-200 text-sm font-semibold text-green-900">Fresh grocery</div>@endif
       <div class="p-4">
         <h3 class="text-md font-semibold line-clamp-1">{{ $foodProduct['name'] }}</h3>
         <p class="mt-2 text-sm text-gray-600 line-clamp-1">{{ $foodProduct['description'] }}</p>
@@ -83,7 +88,7 @@
 <div class="flex overflow-x-auto p-2 bg-gray-50 gap-3">
     @foreach ($vendors as $vendor)
     <div class="flex-shrink-0 w-30">
-        <img src="{{ $vendor->image }}" alt="{{ $vendor->name }}" class="w-full h-30 object-cover">
+        <img src="{{ $vendor->profile_picture_url }}" alt="{{ $vendor->name }}" class="w-full h-30 object-cover">
         <div class="text-center mt-2">
             <span class="text-lg font-medium line-clamp-1">{{ $vendor->name }}</span>
         </div>
