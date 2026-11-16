@@ -12,6 +12,19 @@ class Vendor extends Authenticatable
         'verification', 'description',
     ];
 
+    public function getProfilePictureUrlAttribute(): ?string
+    {
+        if (! $this->profile_picture) {
+            return null;
+        }
+
+        if (filter_var($this->profile_picture, FILTER_VALIDATE_URL)) {
+            return $this->profile_picture;
+        }
+
+        return Storage::disk('public')->url($this->profile_picture);
+    }
+
     public function isVendor()
     {
         return $this->role === 'vendor'; // Assuming 'role' column in vendors table holds the role information
