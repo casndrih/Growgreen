@@ -121,9 +121,9 @@
                     <div class="flex justify-between">
                         <div class="flex items-start">
                             <div class="flex items-center h-5">
-                                <input id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300" required="">
+                                <input id="terms" name="terms" type="checkbox" value="1" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-lime-300" required>
                             </div>
-                            <label for="remember" class="ml-2 text-sm text-gray-900">I agree to the <a href="{{ URL::to('/policy') }}" class="hover:underline text-lime-500">Privacy Policy</a> & <a href="{{ URL::to('/tos') }}" class="hover:underline text-lime-500">T&C</a> of Grogreen.</label>
+                            <label for="terms" class="ml-2 text-sm text-gray-900">I agree to the <a href="{{ URL::to('/policy') }}" class="hover:underline text-lime-500">Privacy Policy</a> & <a href="{{ URL::to('/tos') }}" class="hover:underline text-lime-500">T&C</a> of Grogreen.</label>
                         </div>
                         <a data-modal-target="reset-modal" data-modal-show="reset-modal" data-modal-hide="registration-modal" class="text-sm text-lime-500 hover:underline">Lost Password?</a>
                     </div>
