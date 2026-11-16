@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -12,7 +17,69 @@ class AuthController extends Controller
         return view('Auth.login');
     }
 
-    public function sendResetLink(Request $request)\n    {\n        $validated = $request->validate(['email' => ['required', 'email']]);\n        $broker = $this->passwordBrokerFor($validated['email']);\n        $status = Password::broker($broker)->sendResetLink(['email' => $validated['email']]);\n\n        if ($status === Password::RESET_LINK_SENT) {\n            return back()->with('success', 'If an account exists for that email, a password reset link has been sent.');\n        }\n\n        return back()->withErrors(['email' => __($status)]);\n    }\n\n    public function showResetForm(Request $request, string $token)\n    {\n        return view('Auth.reset-password', [\n            'token' => $token,\n            'email' => $request->query('email'),\n        ]);\n    }\n\n    public function resetPassword(Request $request)\n    {\n        $validated = $request->validate([\n            'token' => ['required'],\n            'email' => ['required', 'email'],\n            'password' => ['required', 'string', 'min:8', 'confirmed'],\n        ]);\n\n        $broker = $this->passwordBrokerFor($validated['email']);\n        $status = Password::broker($broker)->reset($validated, function ($user) use ($validated) {\n            $user->forceFill([\n                'password' => Hash::make($validated['password']),\n                'remember_token' => Str::random(60),\n            ])->save();\n\n            event(new PasswordReset($user));\n        });\n\n        if ($status === Password::PASSWORD_RESET) {\n            return redirect()->route('login')->with('success', 'Your password has been reset. You can now sign in.');\n        }\n\n        return back()->withErrors(['email' => __($status)]);\n    }\n\n    protected function passwordBrokerFor(string $email): string\n    {\n        if (DB::table('admins')->where('email', $email)->exists()) {\n            return 'admins';\n        }\n\n        if (DB::table('vendors')->where('email', $email)->exists()) {\n            return 'vendors';\n        }\n\n        return 'users';\n    }\n\n    public function login(Request $request)
+    public function sendResetLink(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $broker = $this->passwordBrokerFor($validated['email']);
+        $status = Password::broker($broker)->sendResetLink(['email' => $validated['email']]);
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('success', 'If an account exists for that email, a password reset link has been sent.');
+        }
+
+        return back()->withErrors(['email' => __($status)]);
+    }
+
+    public function showResetForm(Request $request, string $token)
+    {
+        return view('Auth.reset-password', [
+            'token' => $token,
+            'email' => $request->query('email'),
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validated = $request->validate([
+            'token' => ['required'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $broker = $this->passwordBrokerFor($validated['email']);
+        $status = Password::broker($broker)->reset($validated, function ($user) use ($validated) {
+            $user->forceFill([
+                'password' => Hash::make($validated['password']),
+                'remember_token' => Str::random(60),
+            ])->save();
+
+            event(new PasswordReset($user));
+        });
+
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('login')->with('success', 'Your password has been reset. You can now sign in.');
+        }
+
+        return back()->withErrors(['email' => __($status)]);
+    }
+
+    protected function passwordBrokerFor(string $email): string
+    {
+        if (DB::table('admins')->where('email', $email)->exists()) {
+            return 'admins';
+        }
+
+        if (DB::table('vendors')->where('email', $email)->exists()) {
+            return 'vendors';
+        }
+
+        return 'users';
+    }
+
+    public function login(Request $request)
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
