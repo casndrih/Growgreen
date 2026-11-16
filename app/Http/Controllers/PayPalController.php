@@ -77,7 +77,7 @@ class PayPalController extends Controller
                     'order_ids' => collect($orders)->pluck('id')->all(),
                 ]);
             });
-        } catch (\\Throwable $exception) {
+        } catch (\Throwable $exception) {
             report($exception);
             return redirect()->route('cart.index')->with('error', 'Your cart changed while checkout was starting. Please review it and try again.');
         }
