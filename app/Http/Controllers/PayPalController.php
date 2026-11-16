@@ -37,7 +37,8 @@ class PayPalController extends Controller
         }
 
         $currency = strtoupper((string) config('paypal.currency', 'USD'));
-        $payment = DB::transaction(function () use ($cartItems, $userId, $currency) {
+        try {
+            $payment = DB::transaction(function () use ($cartItems, $userId, $currency) {
             $totalCents = 0;
             $orders = [];
 
@@ -67,15 +68,19 @@ class PayPalController extends Controller
                 throw new \DomainException('The cart total must be greater than zero.');
             }
 
-            return Payment::create([
-                'user_id' => $userId,
-                'reference' => (string) Str::uuid(),
-                'amount' => number_format($totalCents / 100, 2, '.', ''),
-                'currency' => $currency,
-                'status' => 'pending',
-                'order_ids' => collect($orders)->pluck('id')->all(),
-            ]);
-        });
+                return Payment::create([
+                    'user_id' => $userId,
+                    'reference' => (string) Str::uuid(),
+                    'amount' => number_format($totalCents / 100, 2, '.', ''),
+                    'currency' => $currency,
+                    'status' => 'pending',
+                    'order_ids' => collect($orders)->pluck('id')->all(),
+                ]);
+            });
+        } catch (\\Throwable $exception) {
+            report($exception);
+            return redirect()->route('cart.index')->with('error', 'Your cart changed while checkout was starting. Please review it and try again.');
+        }
 
         try {
             $provider = $this->paypal();
@@ -186,6 +191,7 @@ class PayPalController extends Controller
                     throw new \RuntimeException('The local order records could not be verified.');
                 }
 
+                $stockUpdates = [];
                 foreach ($orders as $order) {
                     $product = FoodProduct::whereKey($order->product_id)->lockForUpdate()->first();
 
@@ -194,13 +200,15 @@ class PayPalController extends Controller
                             'status' => 'requires_refund',
                             'response' => $response,
                         ]);
-
                         Order::whereIn('id', $lockedPayment->order_ids)->update(['status' => 'payment_review']);
-
                         return;
                     }
 
-                    $product->decrement('stock', (int) $order->quantity);
+                    $stockUpdates[] = ['product' => $product, 'quantity' => (int) $order->quantity];
+                }
+
+                foreach ($stockUpdates as $stockUpdate) {
+                    $stockUpdate['product']->decrement('stock', $stockUpdate['quantity']);
                 }
 
                 Order::whereIn('id', $lockedPayment->order_ids)->update(['status' => 'paid']);
