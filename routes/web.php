@@ -22,7 +22,7 @@ Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/product', [ProductController::class, 'show'])->name('product.show');
 
 Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:5,1');
-Route::get('/login', fn () => view('Auth.login'))->name('login');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
