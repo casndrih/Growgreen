@@ -106,8 +106,12 @@
     });
 
     function showToast(message) {
-      const toastContainer = $('#toast-container');
-      const toast = $('<div class="toast">' + message + '</div>');
+      let toastContainer = $('#toast-container');
+      if (!toastContainer.length) {
+        toastContainer = $('<div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2"></div>').appendTo('body');
+      }
+
+      const toast = $('<div class="rounded-lg bg-gray-900 px-4 py-3 text-sm font-medium text-white shadow-lg"></div>').text(message);
       toastContainer.append(toast);
 
       setTimeout(function() {
