@@ -22,6 +22,9 @@ Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/product', [ProductController::class, 'show'])->name('product.show');
 
 Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:5,1');
+Route::post('/reset', [AuthController::class, 'sendResetLink'])->middleware('throttle:5,1')->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1')->name('password.update');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
