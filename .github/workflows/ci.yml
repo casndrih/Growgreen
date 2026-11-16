@@ -77,4 +77,8 @@ jobs:
           DB_DATABASE: grogreen_test
           DB_USERNAME: root
           DB_PASSWORD: ""
-        run: php artisan test --no-coverage
+        run: |
+          php artisan migrate --force
+          php artisan route:cache
+          php artisan view:cache
+          php artisan test --no-coverage
