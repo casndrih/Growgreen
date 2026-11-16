@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FoodProduct;
 use App\Models\Order;
 use App\Models\OrderHistory;
+use App\Models\Payment;
 use App\Models\User;
 use App\Models\Vendor;
 
