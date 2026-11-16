@@ -104,7 +104,8 @@ class VendorController extends Controller
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
-        $validated['description'] = $validated['description'] ?? '';\n        $product->update($validated);
+        $validated['description'] = $validated['description'] ?? '';
+        $product->update($validated);
 
         return redirect()->route('vendor.dashboard')->with('success', 'Product updated successfully.');
     }
