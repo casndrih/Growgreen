@@ -9,7 +9,7 @@ on:
     branches: [main, master, 'upgrade/**']
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   laravel-tests:
@@ -58,6 +58,22 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm ci
+
+      - name: Apply non-breaking npm security updates
+        run: npm audit fix
+
+      - name: Commit npm lockfile security updates
+        run: |
+          if ! git diff --quiet -- package-lock.json package.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add package-lock.json package.json
+            git commit -m "chore: patch vulnerable npm dependencies"
+            git push
+          fi
+
+      - name: Audit npm dependencies
+        run: npm audit --audit-level=high
 
       - name: Build frontend assets
         run: npm run production
