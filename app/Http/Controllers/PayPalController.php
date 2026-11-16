@@ -31,7 +31,7 @@ class PayPalController extends Controller
         }
 
         foreach ($cartItems as $item) {
-            if (!$item->product || (int) $item->quantity < 1 || (int) $item->quantity > (int) $item->product->stock) {
+            if (! $item->product || (int) $item->quantity < 1 || (int) $item->quantity > (int) $item->product->stock) {
                 return redirect()->route('cart.index')->with('error', 'One or more cart items are no longer available in the requested quantity.');
             }
         }
@@ -137,7 +137,7 @@ class PayPalController extends Controller
             ->where('paypal_order_id', $paypalOrderId)
             ->first();
 
-        if (!$payment) {
+        if (! $payment) {
             return redirect()->route('cart.index')->with('error', 'This PayPal payment could not be found.');
         }
 
@@ -162,7 +162,7 @@ class PayPalController extends Controller
             $amountMatches = number_format((float) $capturedValue, 2, '.', '') === number_format((float) $payment->amount, 2, '.', '');
             $currencyMatches = $capturedCurrency === strtoupper($payment->currency);
 
-            if (!$isCompleted || !$amountMatches || !$currencyMatches) {
+            if (! $isCompleted || ! $amountMatches || ! $currencyMatches) {
                 $payment->update([
                     'status' => 'review',
                     'response' => $response,
@@ -195,7 +195,7 @@ class PayPalController extends Controller
                 foreach ($orders as $order) {
                     $product = FoodProduct::whereKey($order->product_id)->lockForUpdate()->first();
 
-                    if (!$product || (int) $product->stock < (int) $order->quantity) {
+                    if (! $product || (int) $product->stock < (int) $order->quantity) {
                         $lockedPayment->update([
                             'status' => 'requires_refund',
                             'response' => $response,
