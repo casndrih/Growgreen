@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Users;
+namespace App\\Http\\Controllers\\Users;
 
-use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\OrderHistory;
-use App\Models\User;
-use App\Models\Vendor;
-use Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use Redirect;
+use App\\Http\\Controllers\\Controller;
+use App\\Models\\Order;
+use App\\Models\\OrderHistory;
+use App\\Models\\User;
+use App\\Models\\Vendor;
+use Illuminate\\Http\\Request;
+use Illuminate\\Support\\Facades\\Auth;
 
 class UserController extends Controller
 {
@@ -18,45 +16,58 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        // Fetch orders with pagination for the currently authenticated user
         $orders = Order::where('user_id', $user->id)
             ->with('user', 'vendor')
+            ->latest()
             ->paginate(10);
 
-        // Fetch order history with pagination for the currently authenticated user
         $order_history = OrderHistory::where('user_id', $user->id)
             ->with('user', 'vendor')
+            ->latest()
             ->paginate(10);
 
-        // Get the vendor data for orders
-        $vendorIds = $orders->pluck('vendor_id')->merge($order_history->pluck('vendor_id'))->unique();
+        $vendorIds = $orders->getCollection()->pluck('vendor_id')
+            ->merge($order_history->getCollection()->pluck('vendor_id'))
+            ->unique();
+
         $vendors = Vendor::whereIn('id', $vendorIds)->get();
 
         return view('User.profile.index', compact('user', 'orders', 'order_history', 'vendors'));
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
+        abort_unless($id === Auth::id(), 403);
+
         return User::findOrFail($id);
     }
 
     public function update(Request $request)
     {
-        // store
-        $user = User::findOrFail($request->edit_user_id);
-        $user->name = $request->edit_user_name;
-        $user->gender = $request->edit_user_gender;
-        $user->birthday = $request->edit_user_birthday;
-        $user->email = $request->edit_user_email;
-        $user->phone = $request->edit_user_phone;
-        $user->city = $request->edit_user_city;
-        $user->state = $request->edit_user_state;
-        $user->home_delivery_address = $request->edit_user_address;
-        $user->save();
+        $user = Auth::user();
 
-        // redirect
-        Session::flash('success', 'Profile Successfully Updated!');
+        $validated = $request->validate([
+            'edit_user_name' => ['required', 'string', 'max:255'],
+            'edit_user_gender' => ['nullable', 'string', 'max:40'],
+            'edit_user_birthday' => ['nullable', 'date'],
+            'edit_user_email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'edit_user_phone' => ['nullable', 'string', 'max:40'],
+            'edit_user_city' => ['nullable', 'string', 'max:120'],
+            'edit_user_state' => ['nullable', 'string', 'max:120'],
+            'edit_user_address' => ['nullable', 'string', 'max:1000'],
+        ]);
 
-        return Redirect::to('/user/profile');
+        $user->update([
+            'name' => $validated['edit_user_name'],
+            'gender' => $validated['edit_user_gender'] ?? null,
+            'birthday' => $validated['edit_user_birthday'] ?? null,
+            'email' => $validated['edit_user_email'],
+            'phone' => $validated['edit_user_phone'] ?? null,
+            'city' => $validated['edit_user_city'] ?? null,
+            'state' => $validated['edit_user_state'] ?? null,
+            'home_delivery_address' => $validated['edit_user_address'] ?? null,
+        ]);
+
+        return redirect()->route('user.profile')->with('success', 'Profile successfully updated.');
     }
 }
