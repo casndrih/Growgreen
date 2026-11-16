@@ -19,12 +19,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        foreach (['users', 'vendors', 'admins'] as $tableName) {
-            if (Schema::hasTable($tableName) && Schema::hasColumn($tableName, 'remember_token')) {
-                Schema::table($tableName, function (Blueprint $table) {
-                    $table->dropColumn('remember_token');
-                });
-            }
-        }
+        // Keep remember tokens in place on rollback: some tables may have
+        // contained this column before this compatibility migration ran.
     }
 };
