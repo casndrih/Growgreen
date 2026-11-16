@@ -39,7 +39,7 @@ class UserController extends Controller
     {
         abort_unless($id === Auth::id(), 403);
 
-        return User::findOrFail($id);
+        return response()->json([User::findOrFail($id)]);
     }
 
     public function update(Request $request)
