@@ -35,14 +35,16 @@ class FrontendController extends Controller
             // Check if the product has an image
             if ($product->image) {
                 // Image exists in the model, use it
-                $productImage = $product->image;
+                $productImage = $product->image_url;
             } else {
                 // Image doesn't exist in the model, fetch from Unsplash API
                 $productImage = $this->unsplash($product->name)['image'];
 
                 // Save the image in the model for future use
-                $product->image = $productImage;
-                $product->save();
+                if ($productImage) {
+                    $product->image = $productImage;
+                    $product->save();
+                }
             }
 
             $productData->push([
