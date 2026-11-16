@@ -1,64 +1,85 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\\Http\\Controllers;
 
-use App\Models\Cart;
-use Illuminate\Http\Request;
+use App\\Models\\Cart;
+use App\\Models\\FoodProduct;
+use Illuminate\\Http\\Request;
+use Illuminate\\Support\\Facades\\DB;
 
 class CartController extends Controller
 {
     public function index()
     {
-        // Logic to fetch the user's cart items
-        $user = auth()->user();
-        $cartItems = Cart::where('user_id', $user->id)->get();
+        $cartItems = Cart::with('product')
+            ->where('user_id', auth()->id())
+            ->get();
 
-        // Return the view with cart items
         return view('Users.cart.index', compact('cartItems'));
     }
 
     public function addToCart(Request $request)
     {
-        // Logic to add an item to the user's cart
-        $user = auth()->user();
-        $productId = $request->input('product_id');
-        $quantity = $request->input('quantity');
+        $validated = $request->validate([
+            'product_id' => ['required', 'integer', 'exists:food_products,id'],
+            'quantity' => ['required', 'integer', 'min:1', 'max:100'],
+        ]);
 
-        // Check if the product is already in the cart
-        $existingItem = Cart::where('user_id', $user->id)
-            ->where('product_id', $productId)
-            ->first();
+        $result = DB::transaction(function () use ($validated) {
+            $product = FoodProduct::query()->lockForUpdate()->findOrFail($validated['product_id']);
 
-        if ($existingItem) {
-            // Update the quantity if the item already exists in the cart
-            $existingItem->update([
-                'quantity' => $existingItem->quantity + $quantity,
-            ]);
-        } else {
-            // Add a new item to the cart if it doesn't exist
-            Cart::create([
-                'user_id' => $user->id,
-                'product_id' => $productId,
-                'quantity' => $quantity,
-            ]);
+            if ((int) $product->stock < (int) $validated['quantity']) {
+                return false;
+            }
+
+            $item = Cart::query()
+                ->where('user_id', auth()->id())
+                ->where('product_id', $product->id)
+                ->lockForUpdate()
+                ->first();
+
+            $newQuantity = ($item?->quantity ?? 0) + (int) $validated['quantity'];
+
+            if ($newQuantity > (int) $product->stock) {
+                return false;
+            }
+
+            if ($item) {
+                $item->update(['quantity' => $newQuantity]);
+            } else {
+                Cart::create([
+                    'user_id' => auth()->id(),
+                    'product_id' => $product->id,
+                    'quantity' => $newQuantity,
+                ]);
+            }
+
+            return true;
+        });
+
+        if (! $result) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The requested quantity is not available in stock.',
+            ], 422);
         }
 
-        // Return the response as JSON
-        return response()->json(['success' => true, 'success' => 'Product added to cart successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Product added to cart successfully.',
+        ]);
     }
 
-    public function removeFromCart(Request $request)
+    public function removeFromCart(Request $request, int $productId)
     {
-        // Logic to remove an item from the user's cart
-        $user = auth()->user();
-        $productId = $request->input('product_id');
-
-        // Find the item in the cart and delete it
-        Cart::where('user_id', $user->id)
+        Cart::query()
+            ->where('user_id', auth()->id())
             ->where('product_id', $productId)
             ->delete();
 
-        // Return the response as JSON
-        return response()->json(['success' => true, 'success' => 'Product removed from cart successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Product removed from cart successfully.',
+        ]);
     }
 }
