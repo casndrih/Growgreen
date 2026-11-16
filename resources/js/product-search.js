@@ -2,44 +2,45 @@ $(document).ready(function() {
   var searchInput = $('#searchInput');
   var dropdownMenu = $('#dropdownMenu');
   var searchResults = $('#searchResults');
-  var commandPalette = $('#commandPalette');
 
   searchInput.on('input', function() {
-    var searchQuery = $(this).val();
+    var searchQuery = String($(this).val() || '').trim();
 
-    if (searchQuery.length > 0) {
-      // Send search request
-      $.get('/search', {
-        q: searchQuery
-      })
+    if (searchQuery.length < 2) {
+      dropdownMenu.hide();
+      searchResults.empty();
+      return;
+    }
+
+    $.get('/search', { q: searchQuery })
       .done(function(response) {
-        var results = response.data;
+        searchResults.empty();
 
-        // Clear previous results
-        searchResults.html('');
+        (response.data || []).forEach(function(result) {
+          var link = $('<a></a>')
+            .attr('href', result.url)
+            .addClass('flex items-center gap-3 px-4 py-3 hover:bg-gray-100')
+            .append($('<span></span>').text(result.name))
+            .append($('<span></span>').addClass('ml-auto text-sm text-gray-500').text(Number(result.price).toFixed(2)));
 
-        // Display new results
-        $.each(results, function(index, result) {
-          var li = $('<li></li>').text(result.name).addClass('py-2 px-4 hover:bg-gray-100');
-          searchResults.append(li);
+          searchResults.append($('<li></li>').append(link));
         });
 
-        // Show the dropdown menu
-        dropdownMenu.css('display', 'block');
+        if (!response.data || response.data.length === 0) {
+          searchResults.append($('<li></li>').addClass('px-4 py-3 text-sm text-gray-500').text('No matching products found.'));
+        }
+
+        dropdownMenu.toggle(true);
       })
-      .fail(function(error) {
-        console.error(error);
+      .fail(function() {
+        searchResults.empty().append($('<li></li>').addClass('px-4 py-3 text-sm text-red-600').text('Search is temporarily unavailable.'));
+        dropdownMenu.show();
       });
-    } else {
-      // Hide the dropdown menu
-      dropdownMenu.css('display', 'none');
-    }
   });
 
   searchInput.on('keydown', function(event) {
     if (event.key === 'Escape') {
-      // Hide the dropdown menu and clear the input
-      dropdownMenu.css('display', 'none');
+      dropdownMenu.hide();
       searchInput.val('');
     }
   });
