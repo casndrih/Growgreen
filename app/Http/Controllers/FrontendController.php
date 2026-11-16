@@ -21,8 +21,6 @@ class FrontendController extends Controller
     public function index()
     {
 
-        $client = new Client;
-
         // For new products
         $newProducts = FoodProduct::where('created_at', '>=', now()->subDays(7))
             ->inRandomOrder()
@@ -56,16 +54,22 @@ class FrontendController extends Controller
             ]);
         }
 
-        // For carousel
-        $response = $client->get('https://api.unsplash.com/photos/random', [
-            'query' => [
-                'count' => 6,
-                'query' => 'vegetables',
-                'client_id' => $this->unsplashApiKey,
-            ],
-        ]);
-
-        $groceries = json_decode($response->getBody(), true);
+        // External imagery is optional; the storefront remains available without an API key.
+        $groceries = [];
+        if ($this->unsplashApiKey) {
+            try {
+                $response = (new Client(['timeout' => 5, 'connect_timeout' => 3]))->get('https://api.unsplash.com/photos/random', [
+                    'query' => [
+                        'count' => 6,
+                        'query' => 'vegetables',
+                        'client_id' => $this->unsplashApiKey,
+                    ],
+                ]);
+                $groceries = json_decode($response->getBody(), true) ?: [];
+            } catch (\Throwable $exception) {
+                report($exception);
+            }
+        }
 
         // For categories
         $groceryCategories = GroceryCategory::all();
@@ -111,16 +115,25 @@ class FrontendController extends Controller
     {
         $client = new Client;
 
-        $response = $client->request('GET', 'https://api.unsplash.com/search/photos', [
-            'query' => [
-                'client_id' => $this->unsplashApiKey,
-                'query' => $name,
-                'per_page' => 1,
-            ],
-        ]);
+        if (! $this->unsplashApiKey) {
+            return ['name' => $name, 'image' => null];
+        }
 
-        $body = json_decode($response->getBody(), true);
-        $image = $body['results'][0]['urls']['regular'];
+        try {
+            $response = (new Client(['timeout' => 5, 'connect_timeout' => 3]))->request('GET', 'https://api.unsplash.com/search/photos', [
+                'query' => [
+                    'client_id' => $this->unsplashApiKey,
+                    'query' => $name,
+                    'per_page' => 1,
+                ],
+            ]);
+
+            $body = json_decode($response->getBody(), true);
+            $image = $body['results'][0]['urls']['regular'] ?? null;
+        } catch (\Throwable $exception) {
+            report($exception);
+            $image = null;
+        }
 
         return [
             'name' => $name,
