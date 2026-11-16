@@ -49,8 +49,8 @@ class VendorController extends Controller
         }
 
         $vendor->update([
-            'address' => $validated['address'] ?? null,
-            'description' => $validated['description'] ?? null,
+            'address' => $validated['address'] ?? '',
+            'description' => $validated['description'] ?? '',
             'profile_picture' => $validated['profile_picture'] ?? $vendor->profile_picture,
             'cover_picture' => $validated['cover_picture'] ?? $vendor->cover_picture,
         ]);
@@ -63,10 +63,10 @@ class VendorController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
-            'category_id' => ['nullable', 'integer', 'exists:grocery_categories,id'],
-            'price' => ['required', 'numeric', 'gt:0', 'max:99999999'],
+            'category_id' => ['required', 'integer', 'exists:grocery_categories,id'],
+            'price' => ['required', 'numeric', 'gt:0', 'max:999999.99'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
-            'image' => ['nullable', 'image', 'max:5120'],
+            'image' => ['required', 'image', 'max:5120'],
         ]);
 
         $image = $request->file('image')?->store('products', 'public');
@@ -75,7 +75,7 @@ class VendorController extends Controller
             'vendor_id' => auth('vendor')->id(),
             'category_id' => $validated['category_id'] ?? null,
             'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
+            'description' => $validated['description'] ?? '',
             'price' => $validated['price'],
             'stock' => $validated['stock'],
             'image' => $image,
