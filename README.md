@@ -11,7 +11,7 @@ Originally developed for the 2023 APEC App Challenge. This repository has been p
 - **Product catalog** — create & manage listings (image, description, price).
 - **Shopping cart** — add/remove items, then check out.
 - **Order management** — buyers track orders; vendors manage fulfillment.
-- **PayPal integration** — PayPal REST checkout via `srmklive/paypal` (requires configured credentials and end-to-end payment verification).
+- **PayPal integration** — server-calculated checkout totals, persisted payment records, capture verification, and order settlement (requires PayPal sandbox/live credentials and end-to-end verification).
 - **Search & filtering** — find products quickly.
 - **Responsive UI** — Tailwind CSS across devices.
 
@@ -24,7 +24,7 @@ Originally developed for the 2023 APEC App Challenge. This repository has been p
 | Logout | switched from `GET` to `POST` (CSRF-safe) |
 | Mass assignment | removed `$guarded = []` from `User`/`Vendor`/`Admin`; explicit `$fillable` including `role` |
 | Leaked secret | hardcoded Unsplash API key removed; now read from `UNSPLASH_ACCESS_KEY` |
-| Dependency audit | `composer audit` clean after upgrade |
+| Dependency audit | `composer audit` is enforced by CI |
 
 ## Requirements
 
@@ -39,16 +39,17 @@ Originally developed for the 2023 APEC App Challenge. This repository has been p
 git clone https://github.com/casndrih/grogreen.git
 cd grogreen
 composer install
-npm install && npm run build
+npm ci && npm run production
 
 cp .env.example .env
-# edit DB + UNSPLASH_ACCESS_KEY in .env
+ # configure DB, APP_URL, PAYPAL_MODE, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET, and optional UNSPLASH_ACCESS_KEY in .env
 php artisan key:generate
-php artisan migrate
+php artisan migrate --force
+php artisan storage:link
 php artisan serve
 ```
 
-Visit `http://localhost:8000`.
+Visit `http://localhost:8000`. For PayPal sandbox checkout, create sandbox REST app credentials in the PayPal Developer Dashboard and set `PAYPAL_MODE=sandbox`. Use HTTPS and live credentials only after sandbox verification.
 
 ## CI & Maintenance
 
