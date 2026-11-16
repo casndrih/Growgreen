@@ -9,12 +9,25 @@ class SearchController extends Controller
 {
     public function search(Request $request)
     {
-        $query = $request->input('q');
+        $validated = $request->validate([
+            'q' => ['required', 'string', 'min:2', 'max:100'],
+        ]);
 
-        // Perform the search query
-        $results = FoodProduct::where('name', 'like', '%'.$query.'%')->get();
+        $results = FoodProduct::query()
+            ->where('name', 'like', '%' . trim($validated['q']) . '%')
+            ->where('stock', '>', 0)
+            ->orderBy('name')
+            ->limit(10)
+            ->get(['id', 'name', 'price', 'image', 'stock']);
 
-        // Return the search results in JSON format
-        return response()->json($results);
+        return response()->json([
+            'data' => $results->map(fn (FoodProduct $product) => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'image' => $product->image_url,
+                'url' => route('product.show', ['id' => $product->id]),
+            ]),
+        ]);
     }
 }
