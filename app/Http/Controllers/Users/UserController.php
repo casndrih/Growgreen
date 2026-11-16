@@ -17,7 +17,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         $orders = Order::where('user_id', $user->id)
-            ->with('user', 'vendor')
+            ->with('user', 'vendor', 'product')
             ->latest()
             ->paginate(10);
 
