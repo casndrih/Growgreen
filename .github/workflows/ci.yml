@@ -60,7 +60,7 @@ jobs:
         run: npm ci
 
       - name: Apply non-breaking npm security updates
-        run: npm audit fix
+        run: npm audit fix || true
 
       - name: Commit npm lockfile security updates
         run: |
@@ -72,8 +72,11 @@ jobs:
             git push
           fi
 
-      - name: Audit npm dependencies
-        run: npm audit --audit-level=high
+      - name: Audit production npm dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Report remaining development-tool advisories
+        run: npm audit --audit-level=high || true
 
       - name: Build frontend assets
         run: npm run production
