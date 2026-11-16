@@ -5,7 +5,7 @@ namespace App\\Http\\Controllers;
 use App\\Models\\User;
 use App\\Models\\Vendor;
 use Illuminate\\Http\\Request;
-use Illuminate\\Support\\Facades\\Auth;
+use Illuminate\\Support\\Facades\\Auth;\nuse Illuminate\\Support\\Facades\\Hash;
 use Illuminate\\Validation\\Rule;
 
 class RegisterController extends Controller
@@ -30,7 +30,7 @@ class RegisterController extends Controller
         $attributes = [
             'name' => $validated['full_name'],
             'email' => $validated['email'],
-            'password' => $validated['password'],
+            'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
         ];
 
