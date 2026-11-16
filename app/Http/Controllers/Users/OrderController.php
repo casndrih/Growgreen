@@ -9,7 +9,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with('vendor')
+        $orders = Order::with('vendor', 'product')
             ->where('user_id', auth()->id())
             ->latest()
             ->paginate(15);
