@@ -15,7 +15,7 @@ class CartController extends Controller
             ->where('user_id', auth()->id())
             ->get();
 
-        return view('Users.cart.index', compact('cartItems'));
+        return view('User.cart.index', compact('cartItems'));
     }
 
     public function addToCart(Request $request)
@@ -77,9 +77,10 @@ class CartController extends Controller
             ->where('product_id', $productId)
             ->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Product removed from cart successfully.',
-        ]);
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Product removed from cart successfully.']);
+        }
+
+        return redirect()->route('cart.index')->with('success', 'Product removed from cart.');
     }
 }
