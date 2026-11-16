@@ -37,6 +37,8 @@ class RegisterController extends Controller
         ];
 
         if ($validated['role'] === 'vendor') {
+            $attributes['address'] = '';
+            $attributes['description'] = '';
             $account = Vendor::create($attributes);
             $guard = 'vendor';
         } else {
