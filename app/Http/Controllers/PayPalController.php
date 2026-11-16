@@ -79,6 +79,7 @@ class PayPalController extends Controller
             });
         } catch (\Throwable $exception) {
             report($exception);
+
             return redirect()->route('cart.index')->with('error', 'Your cart changed while checkout was starting. Please review it and try again.');
         }
 
@@ -201,6 +202,7 @@ class PayPalController extends Controller
                             'response' => $response,
                         ]);
                         Order::whereIn('id', $lockedPayment->order_ids)->update(['status' => 'payment_review']);
+
                         return;
                     }
 
@@ -234,6 +236,7 @@ class PayPalController extends Controller
             return redirect()->route('orders.index')->with('success', 'Your payment was confirmed and your orders have been placed.');
         } catch (\Throwable $exception) {
             report($exception);
+
             return redirect()->route('orders.index')->with('error', 'We could not verify the PayPal capture. Your order has not been marked as paid; please contact support.');
         }
     }
