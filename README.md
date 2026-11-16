@@ -60,3 +60,8 @@ Visit `http://localhost:8000`. For PayPal sandbox checkout, create sandbox REST 
 ## Contributing
 
 Pull requests and issues are welcome on the [GitHub repository](https://github.com/casndrih/grogreen).
+
+
+### Frontend dependency security
+
+The production dependency audit is enforced in CI and currently reports no production vulnerabilities. The legacy Laravel Mix development toolchain still has two high-severity advisories in transitive development-only packages for which npm reports no compatible fix. The build is pinned to webpack 5.105.0 for Laravel Mix 6 compatibility; migrate the build toolchain separately before exposing a webpack dev server to untrusted networks.
