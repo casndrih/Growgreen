@@ -42,7 +42,7 @@ composer install
 npm ci && npm run production
 
 cp .env.example .env
- # configure DB, APP_URL, PAYPAL_MODE, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET, and optional UNSPLASH_ACCESS_KEY in .env
+# Configure DB, APP_URL, PAYPAL_MODE, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET, and optional UNSPLASH_ACCESS_KEY in .env
 php artisan key:generate
 php artisan migrate --force
 php artisan storage:link
