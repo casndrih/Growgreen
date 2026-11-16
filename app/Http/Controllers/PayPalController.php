@@ -31,7 +31,7 @@ class PayPalController extends Controller
         }
 
         foreach ($cartItems as $item) {
-            if (! $item->product || (int) $item->quantity < 1 || (int) $item->quantity > (int) $item->product->stock) {
+            if (!$item->product || (int) $item->quantity < 1 || (int) $item->quantity > (int) $item->product->stock) {
                 return redirect()->route('cart.index')->with('error', 'One or more cart items are no longer available in the requested quantity.');
             }
         }
@@ -39,34 +39,34 @@ class PayPalController extends Controller
         $currency = strtoupper((string) config('paypal.currency', 'USD'));
         try {
             $payment = DB::transaction(function () use ($cartItems, $userId, $currency) {
-            $totalCents = 0;
-            $orders = [];
+                $totalCents = 0;
+                $orders = [];
 
-            foreach ($cartItems as $item) {
-                $product = FoodProduct::query()->lockForUpdate()->findOrFail($item->product_id);
+                foreach ($cartItems as $item) {
+                    $product = FoodProduct::query()->lockForUpdate()->findOrFail($item->product_id);
 
-                if ((int) $item->quantity > (int) $product->stock) {
-                    throw new \DomainException('A product no longer has enough stock.');
+                    if ((int) $item->quantity > (int) $product->stock) {
+                        throw new \DomainException('A product no longer has enough stock.');
+                    }
+
+                    $unitCents = (int) round(((float) $product->price) * 100);
+                    $lineCents = $unitCents * (int) $item->quantity;
+                    $totalCents += $lineCents;
+
+                    $orders[] = Order::create([
+                        'user_id' => $userId,
+                        'vendor_id' => $product->vendor_id,
+                        'product_id' => $product->id,
+                        'product_name' => $product->name,
+                        'quantity' => $item->quantity,
+                        'price' => number_format($lineCents / 100, 2, '.', ''),
+                        'status' => 'payment_pending',
+                    ]);
                 }
 
-                $unitCents = (int) round(((float) $product->price) * 100);
-                $lineCents = $unitCents * (int) $item->quantity;
-                $totalCents += $lineCents;
-
-                $orders[] = Order::create([
-                    'user_id' => $userId,
-                    'vendor_id' => $product->vendor_id,
-                    'product_id' => $product->id,
-                    'product_name' => $product->name,
-                    'quantity' => $item->quantity,
-                    'price' => number_format($lineCents / 100, 2, '.', ''),
-                    'status' => 'payment_pending',
-                ]);
-            }
-
-            if ($totalCents < 1) {
-                throw new \DomainException('The cart total must be greater than zero.');
-            }
+                if ($totalCents < 1) {
+                    throw new \DomainException('The cart total must be greater than zero.');
+                }
 
                 return Payment::create([
                     'user_id' => $userId,
@@ -137,7 +137,7 @@ class PayPalController extends Controller
             ->where('paypal_order_id', $paypalOrderId)
             ->first();
 
-        if (! $payment) {
+        if (!$payment) {
             return redirect()->route('cart.index')->with('error', 'This PayPal payment could not be found.');
         }
 
@@ -162,7 +162,7 @@ class PayPalController extends Controller
             $amountMatches = number_format((float) $capturedValue, 2, '.', '') === number_format((float) $payment->amount, 2, '.', '');
             $currencyMatches = $capturedCurrency === strtoupper($payment->currency);
 
-            if (! $isCompleted || ! $amountMatches || ! $currencyMatches) {
+            if (!$isCompleted || !$amountMatches || !$currencyMatches) {
                 $payment->update([
                     'status' => 'review',
                     'response' => $response,
@@ -195,7 +195,7 @@ class PayPalController extends Controller
                 foreach ($orders as $order) {
                     $product = FoodProduct::whereKey($order->product_id)->lockForUpdate()->first();
 
-                    if (! $product || (int) $product->stock < (int) $order->quantity) {
+                    if (!$product || (int) $product->stock < (int) $order->quantity) {
                         $lockedPayment->update([
                             'status' => 'requires_refund',
                             'response' => $response,
