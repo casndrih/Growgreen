@@ -45,6 +45,7 @@ cp .env.example .env
 # Configure DB, APP_URL, PAYPAL_MODE, PAYPAL_SANDBOX_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_SECRET, and optional UNSPLASH_ACCESS_KEY in .env
 php artisan key:generate
 php artisan migrate --force
+php artisan db:seed --force
 php artisan storage:link
 php artisan serve
 ```
