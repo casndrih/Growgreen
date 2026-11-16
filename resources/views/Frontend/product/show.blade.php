@@ -7,7 +7,7 @@
 <div class="flex flex-col md:flex-row lg:flex-row items-center mx-4 gap-2 justify-center">
   <div class="max-w-md mx-auto bg-white shadow-sm rounded-md overflow-hidden mb-4 lg:mb-0 lg:mr-4">
     <div class="relative">
-      <img src="{{ $product->image }}" alt="Grocery Product" class="w-full h-40 object-cover">
+      <img src="{{ $product->image_url }}" alt="Grocery Product" class="w-full h-40 object-cover">
       <span class="absolute bottom-2 left-2 bg-lime-500 text-white py-1 px-3 line-clamp-1 text-lg font-medium shadow-lg rounded-full">{{ $product->name }}</span>
     </div>
     <div class="px-4 py-3">
