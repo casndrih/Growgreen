@@ -6,6 +6,7 @@
         <p class="text-sm font-semibold uppercase tracking-wider text-green-700">Welcome back</p>
         <h1 class="mt-2 text-3xl font-bold text-gray-900">Sign in to Growgreen</h1>
         <p class="mt-2 text-sm text-gray-500">Access your account, cart and orders.</p>
+        @if(session('success'))<div class="mt-5 rounded-lg bg-green-50 p-3 text-sm text-green-700">{{ session('success') }}</div>@endif
         @if($errors->any())<div class="mt-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ $errors->first() }}</div>@endif
         <form class="mt-6 space-y-4" method="POST" action="{{ route('login.submit') }}">
             @csrf
