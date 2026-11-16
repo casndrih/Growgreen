@@ -40,7 +40,7 @@
         <form class="mt-4 grid gap-4 md:grid-cols-2" method="POST" action="{{ route('vendor.products.store') }}" enctype="multipart/form-data">
             @csrf
             <label class="text-sm font-medium">Product name<input required name="name" value="{{ old('name') }}" class="mt-1 w-full rounded-lg border-gray-300"></label>
-            <label class="text-sm font-medium">Category<select name="category_id" class="mt-1 w-full rounded-lg border-gray-300"><option value="">Choose category</option>@foreach($categories as $category)<option value="{{ $category->id }}">{{ $category->name }}</option>@endforeach</select></label>
+            <label class="text-sm font-medium">Category<select required name="category_id" class="mt-1 w-full rounded-lg border-gray-300"><option value="">Choose category</option>@foreach($categories as $category)<option value="{{ $category->id }}">{{ $category->name }}</option>@endforeach</select></label>
             <label class="text-sm font-medium">Price<input required type="number" min="0.01" step="0.01" name="price" value="{{ old('price') }}" class="mt-1 w-full rounded-lg border-gray-300"></label>
             <label class="text-sm font-medium">Stock<input required type="number" min="0" name="stock" value="{{ old('stock', 0) }}" class="mt-1 w-full rounded-lg border-gray-300"></label>
             <label class="text-sm font-medium md:col-span-2">Description<textarea name="description" rows="3" class="mt-1 w-full rounded-lg border-gray-300">{{ old('description') }}</textarea></label>
