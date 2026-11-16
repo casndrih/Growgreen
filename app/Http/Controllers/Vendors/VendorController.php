@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Vendors;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\FoodProduct;
 use App\Models\GroceryCategory;
 use App\Models\Order;
