@@ -67,6 +67,10 @@
     });
 
     function addCurrentProductToCart(onSuccess) {
+      @guest
+      window.location.href = '{{ route('login') }}';
+      return;
+      @endguest
       const productID = $('input[name="product_id"]').val();
       const quantity = $('.quantity-input').val();
 
