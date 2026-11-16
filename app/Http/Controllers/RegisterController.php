@@ -1,55 +1,51 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\\Http\\Controllers;
 
-use App\Models\User;
-use App\Models\Vendor;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use App\\Models\\User;
+use App\\Models\\Vendor;
+use Illuminate\\Http\\Request;
+use Illuminate\\Support\\Facades\\Auth;
+use Illuminate\\Validation\\Rule;
 
 class RegisterController extends Controller
 {
     public function register(Request $request)
     {
-        // Validate the input
-        $validatedData = $request->validate([
-            'full_name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'confirm_password' => 'required|same:password',
-            'role' => 'required|in:user,vendor',
+        $validated = $request->validate([
+            'full_name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email'),
+                Rule::unique('vendors', 'email'),
+                Rule::unique('admins', 'email'),
+            ],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', Rule::in(['user', 'vendor'])],
         ]);
 
-        // Create a new user based on the role
-        if ($validatedData['role'] === 'user') {
-            $user = User::create([
-                'name' => $validatedData['full_name'],
-                'email' => $validatedData['email'],
-                'password' => bcrypt($validatedData['password']),
-                'role' => $validatedData['role'],
-            ]);
+        $attributes = [
+            'name' => $validated['full_name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'role' => $validated['role'],
+        ];
 
-            // Redirect the user to their profile
-            Session::flash('success', 'Successfully registered!');
-
-            return redirect()->route('user.profile');
-        } elseif ($validatedData['role'] === 'vendor') {
-            $vendor = Vendor::create([
-                'name' => $validatedData['full_name'],
-                'email' => $validatedData['email'],
-                'password' => bcrypt($validatedData['password']),
-                'role' => $validatedData['role'],
-            ]);
-
-            // Redirect the vendor to their dashboard
-            Session::flash('success', 'Successfully registered!');
-
-            return redirect()->route('vendor.dashboard');
+        if ($validated['role'] === 'vendor') {
+            $account = Vendor::create($attributes);
+            $guard = 'vendor';
+        } else {
+            $account = User::create($attributes);
+            $guard = 'web';
         }
 
-        // If the role is not recognized, redirect to the registration page
-        Session::flash('error', 'Invalid role!');
+        Auth::guard($guard)->login($account);
+        $request->session()->regenerate();
 
-        return redirect()->back();
+        return $guard === 'vendor'
+            ? redirect()->route('vendor.dashboard')->with('success', 'Your vendor account has been created.')
+            : redirect()->route('user.profile')->with('success', 'Your account has been created.');
     }
 }
