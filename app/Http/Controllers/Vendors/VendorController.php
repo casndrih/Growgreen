@@ -83,6 +83,29 @@ class VendorController extends Controller
         return redirect()->route('vendor.dashboard')->with('success', 'Product updated successfully.');
     }
 
+    public function updateOrderStatus(Request $request, Order $order)
+    {
+        abort_unless((int) $order->vendor_id === (int) auth('vendor')->id(), 404);
+
+        $validated = $request->validate([
+            'status' => ['required', 'in:processing,shipped,closed'],
+        ]);
+
+        $allowedTransitions = [
+            'paid' => ['processing'],
+            'processing' => ['shipped'],
+            'shipped' => ['closed'],
+        ];
+
+        if (! in_array($validated['status'], $allowedTransitions[$order->status] ?? [], true)) {
+            return redirect()->route('vendor.dashboard')->with('error', 'That order status transition is not allowed.');
+        }
+
+        $order->update(['status' => $validated['status']]);
+
+        return redirect()->route('vendor.dashboard')->with('success', 'Order status updated.');
+    }
+
     public function destroyProduct(FoodProduct $product)
     {
         abort_unless((int) $product->vendor_id === (int) auth('vendor')->id(), 404);
