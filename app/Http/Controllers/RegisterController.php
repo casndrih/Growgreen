@@ -22,7 +22,8 @@ class RegisterController extends Controller
                 Rule::unique('vendors', 'email'),
                 Rule::unique('admins', 'email'),
             ],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'same:confirm_password'],
+            'confirm_password' => ['required', 'string'],
             'role' => ['required', Rule::in(['user', 'vendor'])],
         ]);
 
