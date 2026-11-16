@@ -49,7 +49,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
 
 Route::middleware('auth:vendor')->prefix('vendor')->group(function () {
     Route::get('/dashboard', [VendorController::class, 'index'])->name('vendor.dashboard');
-    Route::post('/create', [VendorController::class, 'store'])->name('vendor.store');
+    Route::post('/profile', [VendorController::class, 'updateProfile'])->name('vendor.profile.update');
     Route::post('/products', [VendorController::class, 'storeProduct'])->name('vendor.products.store');
     Route::put('/products/{product}', [VendorController::class, 'updateProduct'])->name('vendor.products.update');
     Route::delete('/products/{product}', [VendorController::class, 'destroyProduct'])->name('vendor.products.destroy');
