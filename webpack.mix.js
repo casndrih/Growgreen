@@ -2,7 +2,8 @@ const mix = require('laravel-mix');
 const tailwindcss = require('tailwindcss');
 const autoprefixer = require('autoprefixer');
 
-mix.js('resources/js/app.js', 'public/js')
+mix.options({ progress: false })
+    .js('resources/js/app.js', 'public/js')
     .js('resources/js/product-search.js', 'public/js')
     .js('resources/js/not-ready.js', 'public/js')
     .js('resources/js/toast.js', 'public/js')
