@@ -1,14 +1,14 @@
 <?php
 
-namespace App\\Http\\Controllers\\Users;
+namespace App\Http\Controllers\Users;
 
-use App\\Http\\Controllers\\Controller;
-use App\\Models\\Order;
-use App\\Models\\OrderHistory;
-use App\\Models\\User;
-use App\\Models\\Vendor;
-use Illuminate\\Http\\Request;
-use Illuminate\\Support\\Facades\\Auth;
+use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderHistory;
+use App\Models\User;
+use App\Models\Vendor;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
