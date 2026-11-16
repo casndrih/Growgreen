@@ -5,7 +5,7 @@
     @foreach($orders as $order)
         <div class="flex items-center p-4 border-b border-gray-300">
             <div class="flex-shrink-0 w-16 h-16 mr-4">
-                <img src="{{ $order->image }}" alt="Order Image" class="w-full h-full object-cover rounded">
+                <img src="{{ $order->product?->image_url }}" alt="Order Image" class="w-full h-full object-cover rounded">
             </div>
             <div class="flex-1">
                 <h4 class="text-md lg:text-lg font-medium text-gray-900">{{ $order->product_name }}</h4>
