@@ -143,6 +143,7 @@ class VendorController extends Controller
             Storage::disk('public')->delete($product->image);
         }
 
+        Cart::where('product_id', $product->id)->delete();
         $product->delete();
 
         return redirect()->route('vendor.dashboard')->with('success', 'Product deleted successfully.');
