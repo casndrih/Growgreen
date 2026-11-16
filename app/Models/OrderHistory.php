@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderHistory extends Model
 {
+    protected $table = 'order_history';
     protected $fillable = [
         'user_id',
         'vendor_id',
