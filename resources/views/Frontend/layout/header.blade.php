@@ -34,7 +34,7 @@
               <a href="{{ route('user.profile') }}" class="block px-4 py-2 text-gray-600 font-medium hover:bg-gray-50 hover:text-lime-500">Profile</a>
               <a href="{{ URL::to('/user/orders') }}" class="block px-4 py-2 text-gray-600 font-medium hover:bg-gray-50 hover:text-lime-500">Active Orders</a>
               <a href="{{ URL::to('/user/orderhistory') }}" class="block px-4 py-2 text-gray-600 font-medium hover:bg-gray-50 hover:text-lime-500">Order History</a>
-              <a href="{{ URL::to('/logout') }}" class="block px-4 py-2 text-gray-600 font-medium hover:bg-gray-50 hover:text-lime-500">Logout</a>
+              <form action="{{ route('logout') }}" method="POST" class="block">@csrf<button type="submit" class="w-full px-4 py-2 text-left text-gray-600 font-medium hover:bg-gray-50 hover:text-lime-500">Logout</button></form>
             </div>
           </div>
         @else
