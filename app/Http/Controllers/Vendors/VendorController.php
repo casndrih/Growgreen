@@ -91,8 +91,8 @@ class VendorController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
-            'category_id' => ['nullable', 'integer', 'exists:grocery_categories,id'],
-            'price' => ['required', 'numeric', 'gt:0', 'max:99999999'],
+            'category_id' => ['required', 'integer', 'exists:grocery_categories,id'],
+            'price' => ['required', 'numeric', 'gt:0', 'max:999999.99'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'image' => ['nullable', 'image', 'max:5120'],
         ]);
@@ -104,7 +104,7 @@ class VendorController extends Controller
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
-        $product->update($validated);
+        $validated['description'] = $validated['description'] ?? '';\n        $product->update($validated);
 
         return redirect()->route('vendor.dashboard')->with('success', 'Product updated successfully.');
     }
