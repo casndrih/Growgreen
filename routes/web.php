@@ -1,17 +1,17 @@
 <?php
 
-use App\\Http\\Controllers\\Admin\\AdminController;
-use App\\Http\\Controllers\\AuthController;
-use App\\Http\\Controllers\\CartController;
-use App\\Http\\Controllers\\FrontendController;
-use App\\Http\\Controllers\\PayPalController;
-use App\\Http\\Controllers\\ProductController;
-use App\\Http\\Controllers\\RegisterController;
-use App\\Http\\Controllers\\SearchController;
-use App\\Http\\Controllers\\Users\\OrderController;
-use App\\Http\\Controllers\\Users\\UserController;
-use App\\Http\\Controllers\\Vendors\\VendorController;
-use Illuminate\\Support\\Facades\\Route;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\PayPalController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\Users\OrderController;
+use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\Vendors\VendorController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/policy', [FrontendController::class, 'policy'])->name('policy');
