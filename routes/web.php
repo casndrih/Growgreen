@@ -39,6 +39,7 @@ Route::middleware('auth:web')->prefix('user')->group(function () {
 
     Route::post('/paypal/payment', [PayPalController::class, 'createPayment'])->name('paypal.create');
     Route::get('/paypal/payment/execute', [PayPalController::class, 'executePayment'])->name('paypal.execute');
+    Route::get('/paypal/payment/cancel/{reference}', [PayPalController::class, 'cancelPayment'])->name('paypal.cancel');
 });
 
 Route::middleware('auth:admin')->prefix('admin')->group(function () {
@@ -48,4 +49,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
 Route::middleware('auth:vendor')->prefix('vendor')->group(function () {
     Route::get('/dashboard', [VendorController::class, 'index'])->name('vendor.dashboard');
     Route::post('/create', [VendorController::class, 'store'])->name('vendor.store');
+    Route::post('/products', [VendorController::class, 'storeProduct'])->name('vendor.products.store');
+    Route::put('/products/{product}', [VendorController::class, 'updateProduct'])->name('vendor.products.update');
+    Route::delete('/products/{product}', [VendorController::class, 'destroyProduct'])->name('vendor.products.destroy');
 });
