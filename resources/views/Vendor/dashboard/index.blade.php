@@ -43,7 +43,19 @@
             @forelse($products as $product)
                 <div class="flex flex-wrap items-center justify-between gap-4 p-5">
                     <div><p class="font-semibold">{{ $product->name }}</p><p class="text-sm text-gray-500">{{ $product->category?->name ?? 'Uncategorised' }} · {{ number_format((float) $product->price, 2) }} · Stock: {{ $product->stock }}</p></div>
-                    <div class="flex gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <details class="text-sm"><summary class="cursor-pointer rounded-lg border px-3 py-2">Edit</summary>
+                            <form class="mt-3 grid min-w-64 gap-2 rounded-lg border bg-gray-50 p-3" method="POST" action="{{ route('vendor.products.update', $product) }}" enctype="multipart/form-data">
+                                @csrf @method('PUT')
+                                <input required name="name" value="{{ $product->name }}" class="rounded border-gray-300 text-sm" aria-label="Product name">
+                                <input required type="number" min="0.01" step="0.01" name="price" value="{{ $product->price }}" class="rounded border-gray-300 text-sm" aria-label="Price">
+                                <input required type="number" min="0" name="stock" value="{{ $product->stock }}" class="rounded border-gray-300 text-sm" aria-label="Stock">
+                                <select name="category_id" class="rounded border-gray-300 text-sm"><option value="">Uncategorised</option>@foreach($categories as $category)<option value="{{ $category->id }}" @selected($product->category_id == $category->id)>{{ $category->name }}</option>@endforeach</select>
+                                <textarea name="description" rows="2" class="rounded border-gray-300 text-sm" aria-label="Description">{{ $product->description }}</textarea>
+                                <input type="file" name="image" accept="image/*" class="text-xs">
+                                <button class="rounded bg-green-700 px-3 py-2 text-xs font-semibold text-white">Save changes</button>
+                            </form>
+                        </details>
                         <form method="POST" action="{{ route('vendor.products.destroy', $product) }}" onsubmit="return confirm('Delete this product?')">@csrf @method('DELETE')<button class="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700">Delete</button></form>
                     </div>
                 </div>
