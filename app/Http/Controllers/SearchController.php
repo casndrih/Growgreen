@@ -13,8 +13,10 @@ class SearchController extends Controller
             'q' => ['required', 'string', 'min:2', 'max:100'],
         ]);
 
+        $searchPattern = sprintf('%%%s%%', trim($validated['q']));
+
         $results = FoodProduct::query()
-            ->where('name', 'like', '%' . trim($validated['q']) . '%')
+            ->where('name', 'like', $searchPattern)
             ->where('stock', '>', 0)
             ->orderBy('name')
             ->limit(10)
