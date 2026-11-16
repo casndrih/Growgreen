@@ -26,6 +26,11 @@ class ExampleTest extends TestCase
         $this->post('/user/paypal/payment')->assertRedirect('/login');
     }
 
+    public function test_password_reset_form_is_available(): void
+    {
+        $this->get('/reset-password/test-token?email=buyer@example.com')->assertOk();
+    }
+
     public function test_product_search_requires_a_query(): void
     {
         $this->getJson('/search')->assertUnprocessable();
