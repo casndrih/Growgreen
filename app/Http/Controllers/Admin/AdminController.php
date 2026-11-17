@@ -104,7 +104,7 @@ class AdminController extends Controller
         $validated = $request->validate(['status' => ['required', 'in:processing,shipped']]);
         $allowed = ['paid' => ['processing'], 'processing' => ['shipped']];
 
-        if (!in_array($validated['status'], $allowed[$order->status] ?? [], true)) {
+        if (in_array($validated['status'], $allowed[$order->status] ?? [], true) === false) {
             return back()->with('error', 'That order status transition is not allowed.');
         }
 
