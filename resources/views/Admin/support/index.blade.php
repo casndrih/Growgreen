@@ -1,0 +1,6 @@
+@extends('Admin.app')
+@section('content')
+<section class="mx-auto max-w-6xl space-y-6 px-4 py-8"><div><h1 class="text-3xl font-bold text-gray-900">Admin support</h1><p class="mt-1 text-sm text-gray-500">Operational checks and support workflow.</p></div>
+<div class="grid gap-4 md:grid-cols-2"><article class="rounded-xl border border-gray-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.08)]"><h2 class="font-semibold">Deployment health</h2><p class="mt-2 text-sm leading-6 text-gray-600">Check the Render service health endpoint and deployment logs before investigating customer-facing issues.</p><a href="https://growgreen-b8fr.onrender.com/up" target="_blank" rel="noopener" class="mt-3 inline-flex text-sm font-semibold text-green-700 underline">Open health check</a></article>
+<article class="rounded-xl border border-gray-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.08)]"><h2 class="font-semibold">Customer and vendor support</h2><p class="mt-2 text-sm leading-6 text-gray-600">Use Customers, Vendors and Orders to identify the relevant account and order state. Verify payment status before discussing refunds.</p><a href="{{ route('admin.orders.index') }}" class="mt-3 inline-flex text-sm font-semibold text-green-700 underline">Review orders</a></article></div></section>
+@endsection
