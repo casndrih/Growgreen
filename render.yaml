@@ -11,7 +11,7 @@ services:
     name: growgreen
     runtime: docker
     repo: https://github.com/casndrih/Growgreen
-    branch: upgrade/complete-commerce-hardening
+    branch: main
     plan: free
     region: singapore
     dockerfilePath: ./Dockerfile
