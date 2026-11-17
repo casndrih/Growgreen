@@ -67,6 +67,7 @@ class VendorController extends Controller
             'description' => ['nullable', 'string', 'max:5000'],
             'category_id' => ['required', 'integer', 'exists:grocery_categories,id'],
             'price' => ['required', 'numeric', 'gt:0', 'max:999999.99'],
+            'unit' => ['nullable', 'string', 'max:30'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'image' => ['required', 'image', 'max:5120'],
         ]);
@@ -79,6 +80,7 @@ class VendorController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'] ?? '',
             'price' => $validated['price'],
+            'unit' => $validated['unit'] ?? null,
             'stock' => $validated['stock'],
             'image' => $image,
         ]);
@@ -107,6 +109,7 @@ class VendorController extends Controller
         }
 
         $validated['description'] = $validated['description'] ?? '';
+        $validated['unit'] = $validated['unit'] ?? null;
         $product->update($validated);
 
         return redirect()->route('vendor.dashboard')->with('success', 'Product updated successfully.');
