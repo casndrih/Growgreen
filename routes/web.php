@@ -50,6 +50,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/vendors', [AdminController::class, 'vendors'])->name('vendors.index');
     Route::patch('/vendors/{vendor}', [AdminController::class, 'updateVendor'])->name('vendors.update');
     Route::get('/products', [AdminController::class, 'products'])->name('products.index');
+    Route::patch('/products/{product}', [AdminController::class, 'updateProduct'])->name('products.update');
     Route::get('/orders', [AdminController::class, 'orders'])->name('orders.index');
     Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.status');
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
