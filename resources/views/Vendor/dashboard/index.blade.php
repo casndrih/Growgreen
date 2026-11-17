@@ -9,7 +9,7 @@
 <body class="min-h-screen bg-gray-50 text-gray-900">
 <header class="bg-green-800 text-white">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5">
-        <div><p class="text-xl font-bold">Growgreen</p><p class="text-sm text-green-100">Vendor workspace</p></div>
+        <div class="flex items-center gap-3"><img src="{{ auth('vendor')->user()->profile_picture_url ?: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&h=120&q=80' }}" alt="" class="h-11 w-11 rounded-full object-cover"><div><p class="text-xl font-bold">Growgreen</p><p class="text-sm text-green-100">Vendor workspace</p></div></div><nav class="flex flex-wrap gap-3 text-sm"><a href="#store-profile">Store</a><a href="#catalogue">Products</a><a href="#orders">Orders</a><a href="#order-history">Order history</a></nav>
         <form method="POST" action="{{ route('logout') }}">@csrf<button class="rounded-lg bg-white/10 px-4 py-2 hover:bg-white/20">Sign out</button></form>
     </div>
 </header>
@@ -19,7 +19,7 @@
         @if(session($key))<div class="rounded-lg bg-{{ $color }}-50 p-4 text-{{ $color }}-800">{{ session($key) }}</div>@endif
     @endforeach
     @if($errors->any())<div class="rounded-lg bg-red-50 p-4 text-red-800"><ul class="list-disc pl-5">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
-    <section class="rounded-xl border bg-white p-5 shadow-sm">
+    <section id="store-profile" class="rounded-xl border bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
         <h2 class="text-lg font-semibold">Store profile</h2>
         <form class="mt-4 grid gap-4 md:grid-cols-2" method="POST" action="{{ route('vendor.profile.update') }}" enctype="multipart/form-data">
             @csrf
@@ -32,10 +32,10 @@
     </section>
     <section class="grid gap-4 sm:grid-cols-3">
         @foreach($stats as $label => $value)
-            <article class="rounded-xl border bg-white p-5 shadow-sm"><p class="text-sm capitalize text-gray-500">{{ str_replace('_', ' ', $label) }}</p><p class="mt-2 text-3xl font-bold">{{ number_format($value) }}</p></article>
+            <article class="rounded-xl border bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.08)]"><p class="text-sm capitalize text-gray-500">{{ str_replace('_', ' ', $label) }}</p><p class="mt-2 text-3xl font-bold">{{ number_format($value) }}</p></article>
         @endforeach
     </section>
-    <section class="rounded-xl border bg-white p-5 shadow-sm">
+    <section class="rounded-xl border bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
         <h2 class="text-lg font-semibold">Add a product</h2>
         <form class="mt-4 grid gap-4 md:grid-cols-2" method="POST" action="{{ route('vendor.products.store') }}" enctype="multipart/form-data">
             @csrf
@@ -48,7 +48,7 @@
             <div class="flex items-end"><button class="rounded-lg bg-green-700 px-5 py-3 font-semibold text-white hover:bg-green-800">Add product</button></div>
         </form>
     </section>
-    <section class="rounded-xl border bg-white shadow-sm">
+    <section id="catalogue" class="rounded-xl border bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
         <div class="border-b px-5 py-4"><h2 class="font-semibold">Your products</h2></div>
         <div class="divide-y">
             @forelse($products as $product)
@@ -76,12 +76,18 @@
         </div>
         <div class="p-5">{{ $products->links() }}</div>
     </section>
-    <section class="rounded-xl border bg-white shadow-sm">
+    <section id="orders" class="rounded-xl border bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
         <div class="border-b px-5 py-4"><h2 class="font-semibold">Recent orders</h2></div>
         <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-gray-50 text-gray-500"><tr><th class="px-5 py-3">Order</th><th class="px-5 py-3">Product</th><th class="px-5 py-3">Qty</th><th class="px-5 py-3">Total</th><th class="px-5 py-3">Status</th></tr></thead><tbody class="divide-y">
             @forelse($orders as $order)<tr><td class="px-5 py-3">#{{ $order->id }}</td><td class="px-5 py-3">{{ $order->product_name }}</td><td class="px-5 py-3">{{ $order->quantity }}</td><td class="px-5 py-3">{{ number_format((float) $order->price, 2) }}</td><td class="px-5 py-3"><div>{{ str_replace('_', ' ', $order->status) }}</div>@if($order->status === 'paid' || $order->status === 'processing' || $order->status === 'shipped')<form method="POST" action="{{ route('vendor.orders.status', $order) }}" class="mt-2 flex items-center gap-2">@csrf @method('PATCH')<select name="status" class="rounded border-gray-300 text-xs"><option value="processing" @selected($order->status === 'paid')>Processing</option><option value="shipped" @selected($order->status === 'processing')>Shipped</option><option value="closed" @selected($order->status === 'shipped')>Complete</option></select><button class="rounded bg-green-700 px-2 py-1 text-xs text-white">Update</button></form>@endif</td></tr>@empty<tr><td colspan="5" class="px-5 py-8 text-center text-gray-500">No orders yet.</td></tr>@endforelse
         </tbody></table></div>
     </section>
+<section id="order-history" class="mx-auto mt-8 max-w-7xl rounded-xl border bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
+    <div class="border-b px-5 py-4"><h2 class="font-semibold">Completed order history</h2></div>
+    <div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-gray-50 text-gray-500"><tr><th class="px-5 py-3">Customer</th><th class="px-5 py-3">Product</th><th class="px-5 py-3">Qty</th><th class="px-5 py-3">Total</th><th class="px-5 py-3">Completed</th></tr></thead><tbody class="divide-y">
+    @forelse($orderHistory as $history)<tr><td class="px-5 py-3">{{ $history->user?->name ?? '—' }}</td><td class="px-5 py-3">{{ $history->product_name }}</td><td class="px-5 py-3">{{ $history->quantity }}</td><td class="px-5 py-3">K{{ number_format((float)$history->price,2) }}</td><td class="px-5 py-3">{{ $history->created_at?->format('d M Y') }}</td></tr>@empty<tr><td colspan="5" class="px-5 py-8 text-center text-gray-500">No completed orders yet.</td></tr>@endforelse
+    </tbody></table></div>
+</section>
 </main>
 </body>
 </html>
