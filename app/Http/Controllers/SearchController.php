@@ -23,7 +23,7 @@ class SearchController extends Controller
             })
             ->orderBy('name');
 
-        if (! $request->expectsJson()) {
+        if (!$request->expectsJson()) {
             $products = $query->paginate(16)->withQueryString();
             return view('Frontend.search.index', compact('products', 'term'));
         }
