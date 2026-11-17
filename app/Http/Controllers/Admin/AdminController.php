@@ -28,6 +28,7 @@ class AdminController extends Controller
         $recentVendors = Vendor::latest()->limit(8)->get();
         $recentPayments = Payment::with('user')->latest()->limit(10)->get();
 
+
         return view('Admin.dashboard.index', compact('stats', 'recentOrders', 'recentVendors', 'recentPayments'));
     }
 
@@ -43,6 +44,7 @@ class AdminController extends Controller
 
         $users = $query->paginate(15)->withQueryString();
 
+
         return view('Admin.users.index', compact('users'));
     }
 
@@ -57,6 +59,7 @@ class AdminController extends Controller
         }
 
         $vendors = $query->paginate(15)->withQueryString();
+
 
         return view('Admin.vendors.index', compact('vendors'));
     }
@@ -74,6 +77,7 @@ class AdminController extends Controller
 
         $products = $query->paginate(20)->withQueryString();
 
+
         return view('Admin.products.index', compact('products'));
     }
 
@@ -86,6 +90,7 @@ class AdminController extends Controller
 
         $orders = $query->paginate(20)->withQueryString();
 
+
         return view('Admin.orders.index', compact('orders'));
     }
 
@@ -96,6 +101,7 @@ class AdminController extends Controller
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
         ]);
         $product->update($validated);
+
         return back()->with('success', 'Product price and stock updated.');
     }
 
@@ -110,6 +116,7 @@ class AdminController extends Controller
 
         $order->update(['status' => $validated['status']]);
 
+
         return back()->with('success', 'Order status updated.');
     }
 
@@ -121,6 +128,7 @@ class AdminController extends Controller
         ]);
 
         $vendor->update($validated);
+
 
         return back()->with('success', 'Vendor status updated.');
     }
