@@ -25,8 +25,10 @@ class SearchController extends Controller
 
         if ($request->expectsJson() === false) {
             $products = $query->paginate(16)->withQueryString();
+
             return view('Frontend.search.index', compact('products', 'term'));
         }
+
 
         return response()->json([
             'data' => $query->limit(12)->get()->map(fn (FoodProduct $product) => [
