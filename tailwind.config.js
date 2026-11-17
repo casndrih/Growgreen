@@ -3,6 +3,8 @@ const colors = require('tailwindcss/colors');
 
 module.exports = {
     content: [
+        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+        './storage/framework/views/*.php',
         './resources/**/*.blade.php',
         './resources/**/*.js',
         './node_modules/flowbite/**/*.js',
@@ -22,8 +24,7 @@ module.exports = {
                     return [String(value), `${value / 4}rem`];
                 })
             ),
-        },
-        colors: {
+            colors: {
             transparent: 'transparent',
             current: 'currentColor',
             black: colors.black,
@@ -49,7 +50,7 @@ module.exports = {
             zinc: colors.zinc,
             gray: colors.gray,
             stone: colors.stone,
+            },
         },
-    },
     plugins: [require('flowbite/plugin')],
 };
