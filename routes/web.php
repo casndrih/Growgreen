@@ -13,6 +13,10 @@ use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Vendors\VendorController;
 use Illuminate\Support\Facades\Route;
 
+// Render health check: this application uses the legacy HTTP kernel bootstrap,
+// so Laravel 12's automatic /up route is not registered automatically.
+Route::get('/up', static fn () => response()->json(['status' => 'ok'], 200))->name('health');
+
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/policy', [FrontendController::class, 'policy'])->name('policy');
 Route::get('/tos', [FrontendController::class, 'tos'])->name('tos');
