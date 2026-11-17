@@ -5,8 +5,10 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  pull_request:
+    branches: [main, master]
   push:
-    branches: [main, master, 'upgrade/**']
+    branches: [main, master, 'upgrade/**', 'feature/**']
 
 permissions:
   contents: read
