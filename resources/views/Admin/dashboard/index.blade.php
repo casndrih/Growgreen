@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Growgreen Admin</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-900">
 <header class="bg-green-800 text-white">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5">
         <div><p class="text-xl font-bold">Growgreen</p><p class="text-sm text-green-100">Administration</p></div>
+        <nav class="flex gap-4 text-sm"><a href="{{ route('admin.dashboard') }}" class="font-semibold underline">Dashboard</a><a href="{{ route('admin.users.index') }}" class="hover:underline">Customers</a><a href="{{ route('admin.vendors.index') }}" class="hover:underline">Vendors</a></nav>
         <form method="POST" action="{{ route('logout') }}">@csrf<button class="rounded-lg bg-white/10 px-4 py-2 hover:bg-white/20">Sign out</button></form>
     </div>
 </header>

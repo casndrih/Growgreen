@@ -65,3 +65,21 @@ Pull requests and issues are welcome on the [GitHub repository](https://github.c
 ### Frontend dependency security
 
 The production dependency audit is enforced in CI and currently reports no production vulnerabilities. The legacy Laravel Mix development toolchain still has two high-severity advisories in transitive development-only packages for which npm reports no compatible fix. The build is pinned to webpack 5.105.0 for Laravel Mix 6 compatibility; migrate the build toolchain separately before exposing a webpack dev server to untrusted networks.
+
+
+## Demo data (optional)
+
+Demo records are opt-in and are not created in production by default. To populate a local or staging database with a sample administrator, customer, vendor and ten grocery products, set:
+
+```env
+GROWGREEN_DEMO_SEED=true
+GROWGREEN_DEMO_PASSWORD=use-a-unique-password-at-least-12-characters
+```
+
+Then run `php artisan db:seed --force`. The accounts are created only if their reserved `@growgreen.test` email addresses do not already exist:
+
+- Admin: `admin.demo@growgreen.test`
+- Customer: `customer.demo@growgreen.test`
+- Vendor: `vendor.demo@growgreen.test`
+
+All three use the password supplied in `GROWGREEN_DEMO_PASSWORD`. Use a unique staging-only password, never a production administrator password. Disable `GROWGREEN_DEMO_SEED` and remove the demo password after testing. The seeder is idempotent and does not delete or overwrite existing records.

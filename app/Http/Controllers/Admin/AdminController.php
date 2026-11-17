@@ -9,6 +9,7 @@ use App\Models\OrderHistory;
 use App\Models\Payment;
 use App\Models\User;
 use App\Models\Vendor;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -28,5 +29,35 @@ class AdminController extends Controller
         $recentPayments = Payment::with('user')->latest()->limit(10)->get();
 
         return view('Admin.dashboard.index', compact('stats', 'recentOrders', 'recentVendors', 'recentPayments'));
+    }
+
+    public function users(Request $request)
+    {
+        $query = User::query()->latest();
+        if ($search = trim((string) $request->query('q'))) {
+            $term = '%'.mb_strtolower($search).'%';
+            $query->where(fn ($builder) => $builder
+                ->whereRaw('LOWER(name) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(email) LIKE ?', [$term]));
+        }
+
+        $users = $query->paginate(15)->withQueryString();
+
+        return view('Admin.users.index', compact('users'));
+    }
+
+    public function vendors(Request $request)
+    {
+        $query = Vendor::query()->latest();
+        if ($search = trim((string) $request->query('q'))) {
+            $term = '%'.mb_strtolower($search).'%';
+            $query->where(fn ($builder) => $builder
+                ->whereRaw('LOWER(name) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(email) LIKE ?', [$term]));
+        }
+
+        $vendors = $query->paginate(15)->withQueryString();
+
+        return view('Admin.vendors.index', compact('vendors'));
     }
 }
