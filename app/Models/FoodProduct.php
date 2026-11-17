@@ -11,6 +11,11 @@ class FoodProduct extends Model
 
     protected $appends = ['image_url'];
 
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
     public function category()
     {
         return $this->belongsTo(GroceryCategory::class);
