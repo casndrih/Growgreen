@@ -16,7 +16,7 @@
 </header>
 <main class="mx-auto max-w-7xl space-y-8 px-5 py-8">
     <div><h1 class="text-3xl font-bold">Dashboard</h1><p class="mt-1 text-gray-500">Marketplace overview and recent activity.</p></div>
-    <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         @foreach($stats as $label => $value)
             <article class="rounded-xl border border-gray-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
                 <p class="text-sm capitalize text-gray-500">{{ str_replace('_', ' ', $label) }}</p>
@@ -24,7 +24,7 @@
             </article>
         @endforeach
     </section>
-    <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
+    <section class="rounded-xl border border-gray-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
         <div class="border-b px-5 py-4"><h2 class="font-semibold">Recent orders</h2></div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
@@ -39,7 +39,7 @@
             </table>
         </div>
     </section>
-    <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
+    <section class="rounded-xl border border-gray-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
         <div class="border-b px-5 py-4"><h2 class="font-semibold">Recent payments</h2><p class="mt-1 text-xs text-gray-500">Review completed, pending and refund-required PayPal transactions.</p></div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
@@ -54,7 +54,7 @@
             </table>
         </div>
     </section>
-    <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
+    <section class="rounded-xl border border-gray-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
         <div class="border-b px-5 py-4"><h2 class="font-semibold">Latest vendors</h2></div>
         <div class="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-4">
             @forelse($recentVendors as $vendor)
