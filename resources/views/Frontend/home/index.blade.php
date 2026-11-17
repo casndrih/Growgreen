@@ -31,7 +31,7 @@
                     @if($item['image'])
                         <img class="h-20 w-full object-cover" src="{{ $item['image'] }}" alt="{{ $item['name'] }}" loading="lazy">
                     @else
-                        <div class="flex h-20 items-center justify-center bg-gradient-to-br from-lime-100 to-green-200 px-2 text-xs font-semibold text-green-900">{{ $item['name'] }}</div>
+                        <div class="flex h-20 items-center justify-center bg-gradient-to-br from-lime-100 to-green-200 text-3xl" aria-hidden="true">🌿</div>
                     @endif
                     <span class="block truncate px-1.5 py-2 text-xs font-medium text-gray-800">{{ $item['name'] }}</span>
                 </a>
