@@ -47,6 +47,7 @@ class PublicPagesTest extends TestCase
             ->assertSee('Fresh Test Store')
             ->assertSee('Fresh test bananas');
     }
+
     public function test_category_search_returns_html_results_and_live_search_json(): void
     {
         $vendor = Vendor::create([
