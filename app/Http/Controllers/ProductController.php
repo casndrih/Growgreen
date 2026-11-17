@@ -15,6 +15,6 @@ class ProductController extends Controller
 
         $vendor = Vendor::findOrFail($product->vendor_id);
 
-        return view('Frontend.product.show', ['product' => $product, 'vendor' => $vendor]);
+        return view('Frontend.product.index', ['product' => $product, 'vendor' => $vendor]);
     }
 }
