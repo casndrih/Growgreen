@@ -11,6 +11,9 @@ chown -R www-data:www-data storage bootstrap/cache
 
 php artisan config:clear
 php artisan migrate --force --no-interaction
+if [ "${GROWGREEN_DEMO_SEED:-false}" = "true" ]; then
+    php artisan db:seed --class=Database\\Seeders\\DemoDataSeeder --force --no-interaction
+fi
 php artisan storage:link || true
 php artisan config:cache
 php artisan route:cache || true
