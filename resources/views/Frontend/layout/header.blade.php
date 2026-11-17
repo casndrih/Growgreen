@@ -16,7 +16,7 @@
       </div>
     </form>
     <div class="ml-auto flex flex-shrink-0 items-center gap-3 sm:ml-0">
-      @guest
+      @if(!auth('web')->check() && !auth('vendor')->check() && !auth('admin')->check())
         <button type="button" data-modal-target="authentication-modal" data-modal-show="authentication-modal" class="rounded-full border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Sign in</button>
       @else
         @if(Auth::user() instanceof \App\Models\User)
@@ -27,7 +27,7 @@
           <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-green-700">Admin</a>
         @endif
         <form action="{{ route('logout') }}" method="POST">@csrf<button type="submit" class="text-sm text-red-600 hover:underline">Logout</button></form>
-      @endguest
+      @endif
     </div>
   </div>
 </header>
