@@ -1,0 +1,45 @@
+databases:
+  - name: growgreen-db
+    databaseName: growgreen_db
+    user: growgreen_db_user
+    plan: free
+    region: singapore
+    postgresMajorVersion: 18
+
+services:
+  - type: web
+    name: growgreen
+    runtime: docker
+    repo: https://github.com/casndrih/Growgreen
+    branch: upgrade/complete-commerce-hardening
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_NAME
+        value: Growgreen
+      - key: APP_URL
+        value: https://growgreen.onrender.com
+      - key: LOG_LEVEL
+        value: warning
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DATABASE_URL
+        fromDatabase:
+          name: growgreen-db
+          property: connectionString
+      - key: PAYPAL_MODE
+        value: sandbox
+      - key: PAYPAL_CURRENCY
+        value: USD
+      - key: PAYPAL_SANDBOX_CLIENT_ID
+        sync: false
+      - key: PAYPAL_SANDBOX_CLIENT_SECRET
+        sync: false
