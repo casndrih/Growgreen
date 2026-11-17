@@ -13,19 +13,23 @@ class SearchController extends Controller
         $term = trim($validated['q']);
         $pattern = '%'.str_replace(['%', '_'], ['\\%', '\\_'], $term).'%';
 
-        $results = FoodProduct::query()
-            ->with('category')
+        $query = FoodProduct::query()
+            ->with(['category', 'vendor'])
             ->where('stock', '>', 0)
-            ->where(function ($query) use ($pattern) {
-                $query->where('name', 'like', $pattern)
-                    ->orWhereHas('category', fn ($category) => $category->where('name', 'like', $pattern));
+            ->where(function ($builder) use ($pattern) {
+                $builder->where('name', 'like', $pattern)
+                    ->orWhereHas('category', fn ($category) => $category->where('name', 'like', $pattern))
+                    ->orWhereHas('vendor', fn ($vendor) => $vendor->where('name', 'like', $pattern));
             })
-            ->orderBy('name')
-            ->limit(12)
-            ->get();
+            ->orderBy('name');
+
+        if (! $request->expectsJson()) {
+            $products = $query->paginate(16)->withQueryString();
+            return view('Frontend.search.index', compact('products', 'term'));
+        }
 
         return response()->json([
-            'data' => $results->map(fn (FoodProduct $product) => [
+            'data' => $query->limit(12)->get()->map(fn (FoodProduct $product) => [
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
