@@ -10,7 +10,7 @@
 <header class="bg-green-800 text-white">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5">
         <div><p class="text-xl font-bold">Growgreen</p><p class="text-sm text-green-100">Administration</p></div>
-        <nav class="flex gap-4 text-sm"><a href="{{ route('admin.dashboard') }}" class="font-semibold underline">Dashboard</a><a href="{{ route('admin.users.index') }}" class="hover:underline">Customers</a><a href="{{ route('admin.vendors.index') }}" class="hover:underline">Vendors</a></nav>
+        <nav class="flex flex-wrap gap-3 text-sm"><a href="{{ route('admin.dashboard') }}">Dashboard</a><a href="{{ route('admin.users.index') }}">Customers</a><a href="{{ route('admin.vendors.index') }}">Vendors</a><a href="{{ route('admin.products.index') }}">Products</a><a href="{{ route('admin.orders.index') }}">Orders</a><a href="{{ route('admin.settings') }}">Settings</a><a href="{{ route('admin.support') }}">Support</a></nav>
         <form method="POST" action="{{ route('logout') }}">@csrf<button class="rounded-lg bg-white/10 px-4 py-2 hover:bg-white/20">Sign out</button></form>
     </div>
 </header>
@@ -18,7 +18,7 @@
     <div><h1 class="text-3xl font-bold">Dashboard</h1><p class="mt-1 text-gray-500">Marketplace overview and recent activity.</p></div>
     <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         @foreach($stats as $label => $value)
-            <article class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <article class="rounded-xl border border-gray-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
                 <p class="text-sm capitalize text-gray-500">{{ str_replace('_', ' ', $label) }}</p>
                 <p class="mt-2 text-3xl font-bold">{{ number_format($value) }}</p>
             </article>
