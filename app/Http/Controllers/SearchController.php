@@ -29,7 +29,6 @@ class SearchController extends Controller
             return view('Frontend.search.index', compact('products', 'term'));
         }
 
-
         return response()->json([
             'data' => $query->limit(12)->get()->map(fn (FoodProduct $product) => [
                 'id' => $product->id,
