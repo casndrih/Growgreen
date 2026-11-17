@@ -6,9 +6,8 @@ cd /var/www/html
 mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 
-if [ -z "${APP_KEY:-}" ]; then
-    php artisan key:generate --force --no-interaction
-fi
+# Render injects environment variables directly; never rely on a local .env file.
+: "${APP_KEY:?APP_KEY must be configured in the Render environment}"
 
 php artisan config:clear
 php artisan migrate --force --no-interaction
