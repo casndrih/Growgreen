@@ -1,0 +1,7 @@
+@extends('Admin.app')
+@section('content')
+<section class="mx-auto max-w-6xl space-y-6 px-4 py-8"><div><h1 class="text-3xl font-bold text-gray-900">Marketplace settings</h1><p class="mt-1 text-sm text-gray-500">Configuration overview for this Growgreen deployment.</p></div>
+<div class="grid gap-4 md:grid-cols-2"><article class="rounded-xl border border-gray-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.08)]"><h2 class="font-semibold">Marketplace</h2><dl class="mt-4 space-y-3 text-sm"><div class="flex justify-between"><dt class="text-gray-500">Application</dt><dd>Growgreen</dd></div><div class="flex justify-between"><dt class="text-gray-500">Environment</dt><dd>{{ app()->environment() }}</dd></div><div class="flex justify-between"><dt class="text-gray-500">Currency display</dt><dd>PGK (Kina)</dd></div></dl></article>
+<article class="rounded-xl border border-gray-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.08)]"><h2 class="font-semibold">Operational safeguards</h2><ul class="mt-3 list-disc space-y-2 pl-5 text-sm text-gray-600"><li>Payment credentials are managed in Render environment variables.</li><li>Demo seeding should remain disabled outside approved test windows.</li><li>Use the deployment dashboard for service health and build logs.</li></ul></article></div>
+<p class="text-sm text-gray-500">Sensitive environment variables are intentionally not editable or displayed here.</p></section>
+@endsection
