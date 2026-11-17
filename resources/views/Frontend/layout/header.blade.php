@@ -8,7 +8,7 @@
       <label for="searchInput" class="sr-only">Search groceries and vendors</label>
       <div class="relative">
         <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">⌕</span>
-        <input type="search" name="q" value="{{ $term ?? request('q') }}" placeholder="Search groceries & vendors" class="w-full rounded-full border-0 bg-gray-50 py-2.5 pl-9 pr-4 text-sm text-gray-900 shadow-[0_1px_3px_rgba(0,0,0,0.14)] outline-none transition focus:bg-white focus:shadow-[0_1px_4px_rgba(132,204,22,0.28)] focus:ring-2 focus:ring-lime-100" id="searchInput" autocomplete="off">
+        <input type="search" name="q" value="{{ $term ?? request('q') }}" placeholder="Search groceries & vendors" class="w-full rounded-full border-0 bg-gray-50 py-2.5 pl-9 pr-4 text-sm text-gray-900 outline-none transition focus:bg-white focus:ring-2 focus:ring-lime-100" id="searchInput" autocomplete="off">
         <div id="dropdownMenu" class="absolute left-0 right-0 top-full z-50 mt-2 hidden max-h-80 overflow-y-auto rounded-xl border-0 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
           <ul id="searchResults" class="divide-y divide-gray-100"></ul>
           <ul id="commandPalette" class="hidden"></ul>
