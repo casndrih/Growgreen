@@ -13,15 +13,12 @@ use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Vendors\VendorController;
 use Illuminate\Support\Facades\Route;
 
-// Render health check: this application uses the legacy HTTP kernel bootstrap,
-// so Laravel 12's automatic /up route is not registered automatically.
 Route::get('/up', static fn () => response()->json(['status' => 'ok'], 200))->name('health');
 
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/policy', [FrontendController::class, 'policy'])->name('policy');
 Route::get('/tos', [FrontendController::class, 'tos'])->name('tos');
 Route::get('/about', [FrontendController::class, 'about'])->name('about');
-
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/product', [ProductController::class, 'show'])->name('product.show');
 
@@ -37,21 +34,20 @@ Route::middleware('auth:web')->prefix('user')->group(function () {
     Route::get('/profile', [UserController::class, 'index'])->name('user.profile');
     Route::get('/profile/edit/{id}', [UserController::class, 'edit'])->name('profile.edit');
     Route::post('/profile/update', [UserController::class, 'update'])->name('profile.update');
-
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/order/{id}', [OrderController::class, 'show'])->name('orders.show');
-
     Route::post('/paypal/payment', [PayPalController::class, 'createPayment'])->name('paypal.create');
     Route::get('/paypal/payment/execute', [PayPalController::class, 'executePayment'])->name('paypal.execute');
     Route::get('/paypal/payment/cancel/{reference}', [PayPalController::class, 'cancelPayment'])->name('paypal.cancel');
 });
 
-Route::middleware('auth:admin')->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/users', [AdminController::class, 'users'])->name('users.index');
+    Route::get('/vendors', [AdminController::class, 'vendors'])->name('vendors.index');
 });
 
 Route::middleware('auth:vendor')->prefix('vendor')->group(function () {
