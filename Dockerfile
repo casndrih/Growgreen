@@ -23,6 +23,14 @@ COPY . .
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader \
     && npm ci --include=dev \
     && npm run production \
+    && test -s public/css/app.css \
+    && test -s public/js/app.js \
+    && test -s public/js/product-search.js \
+    && test -s public/js/not-ready.js \
+    && test -s public/js/toast.js \
+    && test -s public/js/user-tabs.js \
+    && test -s public/mix-manifest.json \
+    && grep -q 'tailwindcss v3' public/css/app.css \
     && rm -rf node_modules \
     && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
