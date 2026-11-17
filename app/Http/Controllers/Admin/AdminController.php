@@ -89,6 +89,16 @@ class AdminController extends Controller
         return view('Admin.orders.index', compact('orders'));
     }
 
+    public function updateProduct(Request $request, FoodProduct $product)
+    {
+        $validated = $request->validate([
+            'price' => ['required', 'numeric', 'gt:0', 'max:999999.99'],
+            'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
+        ]);
+        $product->update($validated);
+        return back()->with('success', 'Product price and stock updated.');
+    }
+
     public function updateOrderStatus(Request $request, Order $order)
     {
         $validated = $request->validate(['status' => ['required', 'in:processing,shipped']]);
