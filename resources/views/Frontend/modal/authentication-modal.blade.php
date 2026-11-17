@@ -21,6 +21,7 @@
   <div class="relative my-auto max-h-[92vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-[0_2px_4px_rgba(0,0,0,0.12)]">
     <button type="button" data-modal-hide="registration-modal" aria-label="Close" class="absolute right-3 top-3 rounded-full p-2 text-gray-500 hover:bg-gray-100">✕</button>
     <div class="p-6 sm:p-8"><h2 class="text-2xl font-bold text-gray-900">Create your account</h2><p class="mt-1 text-sm text-gray-500">Join as a customer or local seller.</p>
+      @if($errors->any())<div class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ $errors->first() }}</div>@endif
       <form class="mt-6 space-y-3" action="{{ url('/register') }}" method="POST">
         @csrf
         <label class="block text-sm font-medium text-gray-700">Full name or store name<input type="text" name="full_name" value="{{ old('full_name') }}" required maxlength="255" autocomplete="name" class="mt-1 w-full rounded-lg border-gray-300 text-sm"></label>
