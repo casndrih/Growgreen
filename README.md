@@ -81,5 +81,6 @@ Then run `php artisan db:seed --force`. The accounts are created only if their r
 - Admin: `admin.demo@growgreen.test`
 - Customer: `customer.demo@growgreen.test`
 - Vendor: `vendor.demo@growgreen.test`
+- Additional demo vendors: `vendor.fresh@growgreen.test`, `vendor.harvest@growgreen.test`, and `vendor.coastal@growgreen.test`
 
 All three use the password supplied in `GROWGREEN_DEMO_PASSWORD`. Use a unique staging-only password, never a production administrator password. Disable `GROWGREEN_DEMO_SEED` and remove the demo password after testing. The seeder is idempotent and does not delete or overwrite existing records.
