@@ -20,7 +20,7 @@
         <button type="button" data-modal-target="authentication-modal" data-modal-show="authentication-modal" class="rounded-full border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Sign in</button>
       @else
         @if(Auth::user() instanceof \App\Models\User)
-          <a href="{{ route('user.profile') }}" class="flex items-center gap-2 text-sm font-medium text-gray-700"><img src="{{ Auth::user()->profile_picture ?: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=96&q=80' }}" alt="" class="h-8 w-8 rounded-full object-cover"><span class="hidden sm:inline">My account</span></a>
+          <a href="{{ route('user.profile') }}" class="flex items-center gap-2 text-sm font-medium text-gray-700"><img src="{{ auth('web')->user()->profile_picture ?: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=96&q=80' }}" alt="" class="h-8 w-8 rounded-full object-cover"><span class="hidden sm:inline">My account</span></a>
         @elseif(Auth::user() instanceof \App\Models\Vendor)
           <a href="{{ route('vendor.dashboard') }}" class="text-sm font-medium text-green-700">Seller dashboard</a>
         @elseif(Auth::user() instanceof \App\Models\Admin)
