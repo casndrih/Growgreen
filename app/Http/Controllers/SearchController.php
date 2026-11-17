@@ -9,18 +9,20 @@ class SearchController extends Controller
 {
     public function search(Request $request)
     {
-        $validated = $request->validate([
-            'q' => ['required', 'string', 'min:2', 'max:100'],
-        ]);
-
-        $searchPattern = sprintf('%%%s%%', trim($validated['q']));
+        $validated = $request->validate(['q' => ['required', 'string', 'min:2', 'max:100']]);
+        $term = trim($validated['q']);
+        $pattern = '%'.str_replace(['%', '_'], ['\\%', '\\_'], $term).'%';
 
         $results = FoodProduct::query()
-            ->where('name', 'like', $searchPattern)
+            ->with('category')
             ->where('stock', '>', 0)
+            ->where(function ($query) use ($pattern) {
+                $query->where('name', 'like', $pattern)
+                    ->orWhereHas('category', fn ($category) => $category->where('name', 'like', $pattern));
+            })
             ->orderBy('name')
-            ->limit(10)
-            ->get(['id', 'name', 'price', 'image', 'stock']);
+            ->limit(12)
+            ->get();
 
         return response()->json([
             'data' => $results->map(fn (FoodProduct $product) => [
@@ -29,6 +31,7 @@ class SearchController extends Controller
                 'price' => $product->price,
                 'image' => $product->image_url,
                 'url' => route('product.show', ['id' => $product->id]),
+                'category' => $product->category?->name,
             ]),
         ]);
     }
