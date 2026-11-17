@@ -17,7 +17,7 @@ services:
     dockerfilePath: ./Dockerfile
     dockerContext: .
     autoDeploy: true
-    healthCheckPath: /
+    healthCheckPath: /up
     envVars:
       - key: APP_ENV
         value: production
@@ -29,6 +29,8 @@ services:
         value: https://growgreen-b8fr.onrender.com
       - key: APP_KEY
         generateValue: true
+      - key: LOG_CHANNEL
+        value: stderr
       - key: LOG_LEVEL
         value: warning
       - key: DB_CONNECTION
