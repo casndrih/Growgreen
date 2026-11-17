@@ -1,19 +1,20 @@
-<div id="toast-default" class="flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
-    @if(Session::has('success'))
-        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-lime-500 bg-lime-100 rounded-lg dark:bg-lime-800 dark:text-lime-200">
-            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
-            <span class="sr-only">Success icon</span>
-        </div>
-        <div class="ml-3 text-sm font-normal text-green-500"> {{ Session::get('success') }}</div>
-    @elseif(Session::has('error'))
-        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
-            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
-            <span class="sr-only">Error icon</span>
-        </div>
-        <div class="ml-3 text-sm font-normal text-red-500"> {{ Session::get('error') }}</div>
-    @endif
-    <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-default" aria-label="Close">
-        <span class="sr-only">Close</span>
-        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-    </button>
-</div>
+@if(Session::has('success') || Session::has('error') || Session::has('warning') || Session::has('info'))
+    @php
+        $toastType = Session::has('success') ? 'success' : (Session::has('error') ? 'error' : (Session::has('warning') ? 'warning' : 'info'));
+        $toastMessage = Session::get($toastType);
+        $toastStyles = [
+            'success' => ['icon' => '✓', 'surface' => 'bg-lime-50', 'icon_surface' => 'bg-lime-100 text-lime-700', 'text' => 'text-lime-900'],
+            'error' => ['icon' => '!', 'surface' => 'bg-red-50', 'icon_surface' => 'bg-red-100 text-red-700', 'text' => 'text-red-900'],
+            'warning' => ['icon' => '!', 'surface' => 'bg-amber-50', 'icon_surface' => 'bg-amber-100 text-amber-700', 'text' => 'text-amber-900'],
+            'info' => ['icon' => 'i', 'surface' => 'bg-sky-50', 'icon_surface' => 'bg-sky-100 text-sky-700', 'text' => 'text-sky-900'],
+        ];
+        $toastStyle = $toastStyles[$toastType];
+    @endphp
+    <div id="toast-default" class="fixed right-4 top-20 z-[70] flex w-[calc(100%-2rem)] max-w-sm items-start gap-3 rounded-xl border-0 {{ $toastStyle['surface'] }} p-4 shadow-[0_2px_6px_rgba(0,0,0,0.12)]" role="{{ $toastType === 'error' ? 'alert' : 'status' }}" aria-live="{{ $toastType === 'error' ? 'assertive' : 'polite' }}">
+        <span class="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full {{ $toastStyle['icon_surface'] }} text-sm font-bold" aria-hidden="true">{{ $toastStyle['icon'] }}</span>
+        <p class="min-w-0 flex-1 break-words pt-1 text-sm font-medium {{ $toastStyle['text'] }}">{{ $toastMessage }}</p>
+        <button type="button" class="-mr-1 -mt-1 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-0 text-gray-500 hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-lime-400" data-dismiss-target="#toast-default" aria-label="Dismiss notification">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+@endif
