@@ -27,7 +27,7 @@
         <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-semibold text-gray-900">Shop by Category</h2></div>
         <div class="flex gap-3 overflow-x-auto pb-2">
             @forelse($categoryData as $item)
-                <a href="{{ route('search', ['q' => $item['name']]) }}" class="group w-24 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white text-center shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(0,0,0,0.10)]">
+                <a href="{{ route('search', ['q' => $item['name']]) }}" class="group w-24 flex-shrink-0 overflow-hidden marketplace-card rounded-xl bg-white text-center transition hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(0,0,0,0.10)]">
                     @if($item['image'])
                         <img class="h-20 w-full object-cover" src="{{ $item['image'] }}" alt="{{ $item['name'] }}" loading="lazy">
                     @else
@@ -45,7 +45,7 @@
         <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-semibold text-gray-900">New Groceries</h2><a href="{{ route('search', ['q' => 'fresh']) }}" class="text-sm font-medium text-green-700 hover:underline">Explore products →</a></div>
         <div class="flex gap-4 overflow-x-auto pb-3">
             @forelse($productData as $foodProduct)
-                <a href="{{ route('product.show', ['id' => $foodProduct['id']]) }}" class="w-44 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition hover:shadow-[0_2px_4px_rgba(0,0,0,0.10)] sm:w-52">
+                <a href="{{ route('product.show', ['id' => $foodProduct['id']]) }}" class="w-44 flex-shrink-0 overflow-hidden marketplace-card rounded-xl bg-white transition hover:shadow-[0_2px_4px_rgba(0,0,0,0.10)] sm:w-52">
                     @if($foodProduct['image'])
                         <img src="{{ $foodProduct['image'] }}" alt="{{ $foodProduct['name'] }}" class="h-36 w-full object-cover" loading="lazy">
                     @else
@@ -63,7 +63,7 @@
         <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-semibold text-gray-900">Popular Vendors</h2><span class="text-xs text-gray-500">Local marketplace sellers</span></div>
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             @forelse($vendors as $vendor)
-                <article class="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
+                <article class="flex items-center gap-3 marketplace-card rounded-xl bg-white p-3">
                     <img src="{{ $vendor->profile_picture_url ?: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=160&q=80' }}" alt="{{ $vendor->name }}" class="h-14 w-14 flex-shrink-0 rounded-full object-cover" loading="lazy">
                     <div class="min-w-0"><p class="truncate text-sm font-semibold text-gray-900">{{ $vendor->name }}</p><p class="truncate text-xs text-gray-500">{{ $vendor->address ?: 'Local seller' }}</p><span class="text-xs font-medium text-green-700">{{ ucfirst($vendor->status ?? 'open') }}</span></div>
                 </article>
