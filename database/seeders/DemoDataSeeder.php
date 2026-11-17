@@ -83,7 +83,7 @@ class DemoDataSeeder extends Seeder
                 'products' => [
                     ['Dairy & Eggs', 'Free Range Eggs', 'Fresh eggs packed for daily family use.', 20.00, 'dozen', 'photo-1518569656558-1f25e69d93d7'],
                     ['Pantry', 'Rolled Oats', 'Versatile oats for breakfast and baking.', 14.00, 'pack', 'photo-1517673132405-a56a62b18caf'],
-                    ['Fruits', 'Green Grapes', 'Sweet crisp grapes, washed and ready to enjoy.', 17.00, 'kg', 'photo- grapes'],
+                    ['Fruits', 'Green Grapes', 'Sweet crisp grapes, washed and ready to enjoy.', 17.00, 'kg', 'photo-1537640538966-79f369143f8f'],
                 ],
             ],
         ];
@@ -108,7 +108,6 @@ class DemoDataSeeder extends Seeder
             }
 
             foreach ($store['products'] as [$categoryName, $name, $description, $price, $unit, $photo]) {
-                if ($photo === 'photo- grapes') $photo = 'photo-1537640538966-79f369143f8f';
                 $category = GroceryCategory::firstOrCreate(['name' => $categoryName]);
                 FoodProduct::firstOrCreate(
                     ['vendor_id' => $vendor->id, 'name' => $name],
