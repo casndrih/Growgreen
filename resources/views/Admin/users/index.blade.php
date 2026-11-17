@@ -10,14 +10,14 @@
 <header class="bg-green-800 text-white">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-5">
         <a href="{{ route('admin.dashboard') }}" class="text-xl font-bold">Growgreen Admin</a>
-        <nav class="flex gap-4 text-sm"><a href="{{ route('admin.dashboard') }}" class="hover:underline">Dashboard</a><a href="{{ route('admin.users.index') }}" class="font-semibold underline">Customers</a><a href="{{ route('admin.vendors.index') }}" class="hover:underline">Vendors</a></nav>
+        <nav class="flex flex-wrap gap-3 text-sm"><a href="{{ route('admin.dashboard') }}">Dashboard</a><a href="{{ route('admin.users.index') }}">Customers</a><a href="{{ route('admin.vendors.index') }}">Vendors</a><a href="{{ route('admin.products.index') }}">Products</a><a href="{{ route('admin.orders.index') }}">Orders</a><a href="{{ route('admin.settings') }}">Settings</a><a href="{{ route('admin.support') }}">Support</a></nav>
         <form method="POST" action="{{ route('logout') }}">@csrf<button class="rounded-lg bg-white/10 px-4 py-2 hover:bg-white/20">Sign out</button></form>
     </div>
 </header>
 <main class="mx-auto max-w-7xl space-y-6 px-5 py-8">
     <div><h1 class="text-3xl font-bold">Customers</h1><p class="mt-1 text-gray-500">Browse registered customer accounts.</p></div>
     <form method="GET" class="flex max-w-xl gap-2"><input name="q" value="{{ request('q') }}" placeholder="Search name or email" class="min-w-0 flex-1 rounded-lg border border-gray-300 px-4 py-2"><button class="rounded-lg bg-green-700 px-5 py-2 font-medium text-white">Search</button>@if(request('q'))<a href="{{ route('admin.users.index') }}" class="rounded-lg border px-4 py-2">Clear</a>@endif</form>
-    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
         <div class="overflow-x-auto"><table class="w-full text-left text-sm">
             <thead class="bg-gray-50 text-gray-500"><tr><th class="px-5 py-3">Customer</th><th class="px-5 py-3">Email</th><th class="px-5 py-3">Phone</th><th class="px-5 py-3">Location</th><th class="px-5 py-3">Joined</th></tr></thead>
             <tbody class="divide-y divide-gray-100">

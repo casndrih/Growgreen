@@ -2,100 +2,75 @@
 
 @section('content')
 <section class="bg-white">
-
-<!-- carousel starts-->
-<div class="flex items-center justify-center w-full lg:mt-0 lg:w-full">
-  <div id="default-carousel" class="relative w-full" data-carousel="slide">
-    <!-- Carousel wrapper -->
-    <div class="relative overflow-hidden h-40 md:h-50 lg:h-100">
-      @foreach($groceries as $index => $grocery)
-        <div class="hidden duration-700 ease-in-out" data-carousel-item{{ $index == 0 ? ' aria-current="true"' : '' }}>
-          <img src="{{ $grocery['urls']['regular'] }}" class="absolute block w-full object-cover -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="{{ $grocery['alt_description'] }}">
-        </div>
-      @endforeach
-      @if(count($groceries) === 0)
-        <div class="flex h-40 items-center justify-center bg-gradient-to-r from-green-800 to-lime-600 px-6 text-center text-white md:h-60 lg:h-96">
-          <div><p class="text-sm font-semibold uppercase tracking-widest text-lime-100">Fresh food, local markets</p><h2 class="mt-3 text-3xl font-bold md:text-5xl">Good food starts here.</h2><p class="mt-3 text-sm text-green-50 md:text-base">Discover fresh groceries from your favourite local vendors.</p></div>
-        </div>
-      @endif
-    </div>
-    <!-- Slider indicators -->
-    <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
-      @foreach($groceries as $index => $grocery)
-        <button type="button" class="w-2 h-2 rounded-full bg-white{{ $index == 0 ? ' active' : '' }}" aria-current="{{ $index == 0 ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}" data-carousel-slide-to="{{ $index }}"></button>
-      @endforeach
-    </div>
-  </div>
-</div>
-<!-- carousel end-->
-
-<!-- categories start-->
-<div class="mx-auto">
-    <h1 class="text-xl m-4 text-gray-900 font-medium font-outfit">Shop by Category</h1>
-
-    <div class="flex flex-row bg-gray-50 p-2 overflow-x-auto gap-3">
-        @foreach ($categoryData as $item)
-            <div class="flex flex-col text-center justify-center bg-white flex-grow-0 flex-shrink-0 w-20 rounded-lg shadow-md">
-                <div class="relative">
-                    @if($item['image'])<img class="w-full h-20 rounded-md object-cover" src="{{ $item['image'] }}" alt="{{ $item['name'] }}">@else<div class="flex h-20 items-center justify-center rounded-md bg-gradient-to-br from-lime-100 to-green-200 px-2 text-xs font-semibold text-green-900">{{ $item['name'] }}</div>@endif
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="text-lg font-medium text-white line-clamp-2">{{ $item['name'] }}</div>
-                    </div>
+    <div id="default-carousel" class="relative w-full" data-carousel="slide">
+        <div class="relative h-48 overflow-hidden bg-green-800 sm:h-64 lg:h-96">
+            @forelse($groceries as $index => $grocery)
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="{{ $grocery['urls']['regular'] }}" class="absolute inset-0 h-full w-full object-cover" alt="{{ $grocery['alt_description'] ?: 'Fresh groceries' }}">
                 </div>
+            @empty
+                <div class="flex h-full items-center justify-center bg-gradient-to-r from-green-900 to-lime-600 px-6 text-center text-white">
+                    <div><p class="text-sm font-semibold uppercase tracking-widest text-lime-100">Fresh food, local markets</p><h2 class="mt-3 text-3xl font-bold md:text-5xl">Good food starts here.</h2><p class="mt-3 text-sm text-green-50 md:text-base">Discover fresh groceries from your favourite local vendors.</p></div>
+                </div>
+            @endforelse
+        </div>
+        @if(count($groceries) > 1)
+            <div class="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 space-x-3">
+                @foreach($groceries as $index => $grocery)
+                    <button type="button" class="h-2 w-2 rounded-full bg-white" aria-label="Slide {{ $index + 1 }}" data-carousel-slide-to="{{ $index }}"></button>
+                @endforeach
             </div>
-        @endforeach
+        @endif
     </div>
-</div>
-<!-- categories end-->
 
-<!-- start new products -->
-<div class="mx-auto">
-  <div class="flex items-center justify-between">
-    <h1 class="text-xl m-4 text-gray-900 font-medium font-outfit">New Groceries</h1>
-    <a href="#" class="flex items-center text-gray-900 hover:text-gray-700">
-      <span class="mr-1 text-md font-outfit font-medium">View more</span>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-4" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor">
-        <path fill-rule="evenodd" d="M0 0h24v24H0V0z" fill="none"/>
-        <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8-8-8z"/>
-      </svg>
-    </a>
-  </div>
-
-  <!-- Horizontal Scroll View -->
-  <div class="flex flex-row overflow-x-auto bg-gray-50 p-2 whitespace-nowrap gap-3">
-    <!-- Loop through the food products and display them as medium cards -->
-    @foreach($productData as $foodProduct)
-    <div class="relative inline-block w-45 bg-white rounded-lg shadow-md">
-      <a href="#" class="absolute top-2 right-2 bg-gray-50 p-2 rounded-full text-lime-500 hover:bg-lime-100">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><g><rect fill="none" height="24" width="24"/><path fill-rule="evenodd" d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z"/></g></svg>
-      </a>
-      <a href="{{ route('product.show', ['id' => $foodProduct['id']]) }}" class="cursor-pointer">
-      @if($foodProduct['image'])<img src="{{ $foodProduct['image'] }}" alt="{{ $foodProduct['name'] }}" class="w-full h-40 object-cover rounded-t-lg">@else<div class="flex h-40 items-center justify-center rounded-t-lg bg-gradient-to-br from-lime-100 to-green-200 text-sm font-semibold text-green-900">Fresh grocery</div>@endif
-      <div class="p-4">
-        <h3 class="text-md font-semibold line-clamp-1">{{ $foodProduct['name'] }}</h3>
-        <p class="mt-2 text-sm text-gray-600 line-clamp-1">{{ $foodProduct['description'] }}</p>
-        <p class="mt-2 text-md font-bold">Price: ${{ $foodProduct['price'] }}</p>
-      </div>
-      </a>
-    </div>
-    @endforeach
-  </div>
-</div>
-<!-- end new products -->
-
-<!-- start popular vendors-->
-<h1 class="text-xl m-4 text-gray-900 font-medium font-outfit">Popular Vendors</h1>
-<div class="flex overflow-x-auto p-2 bg-gray-50 gap-3">
-    @foreach ($vendors as $vendor)
-    <div class="flex-shrink-0 w-30">
-        <img src="{{ $vendor->profile_picture_url }}" alt="{{ $vendor->name }}" class="w-full h-30 object-cover">
-        <div class="text-center mt-2">
-            <span class="text-lg font-medium line-clamp-1">{{ $vendor->name }}</span>
+    <div class="mx-auto max-w-7xl px-4 py-7 sm:px-6">
+        <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-semibold text-gray-900">Shop by Category</h2></div>
+        <div class="flex gap-3 overflow-x-auto pb-2">
+            @forelse($categoryData as $item)
+                <a href="{{ route('search', ['q' => $item['name']]) }}" class="group w-24 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white text-center shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(0,0,0,0.10)]">
+                    @if($item['image'])
+                        <img class="h-20 w-full object-cover" src="{{ $item['image'] }}" alt="{{ $item['name'] }}" loading="lazy">
+                    @else
+                        <div class="flex h-20 items-center justify-center bg-gradient-to-br from-lime-100 to-green-200 text-3xl" aria-hidden="true">🌿</div>
+                    @endif
+                    <span class="block truncate px-1.5 py-2 text-xs font-medium text-gray-800">{{ $item['name'] }}</span>
+                </a>
+            @empty
+                <p class="text-sm text-gray-500">Categories will appear here as vendors add products.</p>
+            @endforelse
         </div>
     </div>
-    @endforeach
-</div>
-<!-- end popular vendors-->
 
+    <div class="mx-auto max-w-7xl px-4 py-5 sm:px-6">
+        <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-semibold text-gray-900">New Groceries</h2><a href="{{ route('search', ['q' => 'fresh']) }}" class="text-sm font-medium text-green-700 hover:underline">Explore products →</a></div>
+        <div class="flex gap-4 overflow-x-auto pb-3">
+            @forelse($productData as $foodProduct)
+                <a href="{{ route('product.show', ['id' => $foodProduct['id']]) }}" class="w-44 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition hover:shadow-[0_2px_4px_rgba(0,0,0,0.10)] sm:w-52">
+                    @if($foodProduct['image'])
+                        <img src="{{ $foodProduct['image'] }}" alt="{{ $foodProduct['name'] }}" class="h-36 w-full object-cover" loading="lazy">
+                    @else
+                        <div class="flex h-36 items-center justify-center bg-gradient-to-br from-lime-100 to-green-200 text-sm font-semibold text-green-900">Fresh grocery</div>
+                    @endif
+                    <div class="p-3"><h3 class="truncate text-sm font-semibold text-gray-900">{{ $foodProduct['name'] }}</h3><p class="mt-1 line-clamp-2 whitespace-normal text-xs text-gray-500">{{ $foodProduct['description'] }}</p><p class="mt-2 text-sm font-bold text-green-800">K{{ number_format((float) $foodProduct['price'], 2) }}</p></div>
+                </a>
+            @empty
+                <p class="text-sm text-gray-500">New products from local vendors will appear here.</p>
+            @endforelse
+        </div>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-4 py-7 sm:px-6">
+        <div class="mb-4 flex items-center justify-between"><h2 class="text-xl font-semibold text-gray-900">Popular Vendors</h2><span class="text-xs text-gray-500">Local marketplace sellers</span></div>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            @forelse($vendors as $vendor)
+                <article class="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
+                    <img src="{{ $vendor->profile_picture_url ?: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=160&q=80' }}" alt="{{ $vendor->name }}" class="h-14 w-14 flex-shrink-0 rounded-full object-cover" loading="lazy">
+                    <div class="min-w-0"><p class="truncate text-sm font-semibold text-gray-900">{{ $vendor->name }}</p><p class="truncate text-xs text-gray-500">{{ $vendor->address ?: 'Local seller' }}</p><span class="text-xs font-medium text-green-700">{{ ucfirst($vendor->status ?? 'open') }}</span></div>
+                </article>
+            @empty
+                <p class="text-sm text-gray-500">No vendors are listed yet.</p>
+            @endforelse
+        </div>
+    </div>
 </section>
 @endsection

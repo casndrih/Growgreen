@@ -7,9 +7,14 @@ use Illuminate\Support\Facades\Storage;
 
 class FoodProduct extends Model
 {
-    protected $fillable = ['vendor_id', 'category_id', 'name', 'description', 'price', 'image', 'stock'];
+    protected $fillable = ['vendor_id', 'category_id', 'name', 'description', 'price', 'image', 'stock', 'unit'];
 
     protected $appends = ['image_url'];
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
 
     public function category()
     {

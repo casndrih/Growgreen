@@ -47,4 +47,34 @@ class PublicPagesTest extends TestCase
             ->assertSee('Fresh Test Store')
             ->assertSee('Fresh test bananas');
     }
+
+    public function test_category_search_returns_html_results_and_live_search_json(): void
+    {
+        $vendor = Vendor::create([
+            'name' => 'Search Test Store',
+            'email' => 'search-store@example.test',
+            'password' => Hash::make('a-long-test-password'),
+            'role' => 'vendor',
+            'address' => 'Port Moresby',
+            'description' => 'Search fixture',
+        ]);
+        $category = GroceryCategory::create(['name' => 'Search Vegetables']);
+        FoodProduct::create([
+            'vendor_id' => $vendor->id,
+            'category_id' => $category->id,
+            'name' => 'Search Fresh Cabbage',
+            'description' => 'Fresh cabbage for testing category search',
+            'price' => 4.50,
+            'image' => 'https://images.unsplash.com/test-image',
+            'stock' => 8,
+        ]);
+
+        $this->get(route('search', ['q' => 'Search Vegetables']))
+            ->assertOk()
+            ->assertSee('Search Fresh Cabbage');
+
+        $this->getJson(route('search', ['q' => 'Search Vegetables']))
+            ->assertOk()
+            ->assertJsonPath('data.0.name', 'Search Fresh Cabbage');
+    }
 }

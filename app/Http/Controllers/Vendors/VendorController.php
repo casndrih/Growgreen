@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\FoodProduct;
 use App\Models\GroceryCategory;
 use App\Models\Order;
+use App\Models\OrderHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,7 +17,8 @@ class VendorController extends Controller
     {
         $vendorId = auth('vendor')->id();
         $products = FoodProduct::with('category')->where('vendor_id', $vendorId)->latest()->paginate(12);
-        $orders = Order::where('vendor_id', $vendorId)->latest()->limit(10)->get();
+        $orders = Order::with('user')->where('vendor_id', $vendorId)->latest()->limit(20)->get();
+        $orderHistory = OrderHistory::with('user')->where('vendor_id', $vendorId)->latest()->limit(20)->get();
         $categories = GroceryCategory::orderBy('name')->get();
         $stats = [
             'products' => FoodProduct::where('vendor_id', $vendorId)->count(),
@@ -24,7 +26,7 @@ class VendorController extends Controller
             'pending_orders' => Order::where('vendor_id', $vendorId)->whereIn('status', ['paid', 'processing', 'pending'])->count(),
         ];
 
-        return view('Vendor.dashboard.index', compact('products', 'orders', 'categories', 'stats'));
+        return view('Vendor.dashboard.index', compact('products', 'orders', 'orderHistory', 'categories', 'stats'));
     }
 
     public function updateProfile(Request $request)
@@ -65,6 +67,7 @@ class VendorController extends Controller
             'description' => ['nullable', 'string', 'max:5000'],
             'category_id' => ['required', 'integer', 'exists:grocery_categories,id'],
             'price' => ['required', 'numeric', 'gt:0', 'max:999999.99'],
+            'unit' => ['nullable', 'string', 'max:30'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'image' => ['required', 'image', 'max:5120'],
         ]);
@@ -77,6 +80,7 @@ class VendorController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'] ?? '',
             'price' => $validated['price'],
+            'unit' => $validated['unit'] ?? null,
             'stock' => $validated['stock'],
             'image' => $image,
         ]);
@@ -93,6 +97,7 @@ class VendorController extends Controller
             'description' => ['nullable', 'string', 'max:5000'],
             'category_id' => ['required', 'integer', 'exists:grocery_categories,id'],
             'price' => ['required', 'numeric', 'gt:0', 'max:999999.99'],
+            'unit' => ['nullable', 'string', 'max:30'],
             'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
             'image' => ['nullable', 'image', 'max:5120'],
         ]);
@@ -105,6 +110,7 @@ class VendorController extends Controller
         }
 
         $validated['description'] = $validated['description'] ?? '';
+        $validated['unit'] = $validated['unit'] ?? null;
         $product->update($validated);
 
         return redirect()->route('vendor.dashboard')->with('success', 'Product updated successfully.');

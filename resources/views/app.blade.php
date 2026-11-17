@@ -68,6 +68,12 @@
     <script src="{{ mix('/js/not-ready.js') }}"></script>
     <script src="{{ mix('/js/toast.js') }}"></script>
     
+    @if($errors->any())
+        @php($validationModal = $errors->has('full_name') || $errors->has('confirm_password') || $errors->has('terms') || $errors->has('role') ? 'registration-modal' : 'authentication-modal')
+        <button id="restore-validation-modal" type="button" data-modal-target="{{ $validationModal }}" data-modal-show="{{ $validationModal }}" class="hidden" aria-hidden="true"></button>
+        <script>document.addEventListener('DOMContentLoaded', function () { document.getElementById('restore-validation-modal')?.click(); });</script>
+    @endif
+
     @yield('js')
     
 </body>
