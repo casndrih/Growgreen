@@ -9,19 +9,20 @@ class OrderController extends Controller
 {
     public function index()
     {
-        // Fetch all orders for the currently authenticated user
-        $orders = Order::where('user_id', auth()->id())->get();
+        $orders = Order::with('vendor', 'product')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->paginate(15);
 
-        // Pass the orders to the view
-        return view('orders.index', ['orders' => $orders]);
+        return view('User.orders.index', compact('orders'));
     }
 
-    public function show($id)
+    public function show(int $id)
     {
-        // Fetch the order by its ID for the currently authenticated user
-        $order = Order::where('user_id', auth()->id())->findOrFail($id);
+        $order = Order::with('vendor')
+            ->where('user_id', auth()->id())
+            ->findOrFail($id);
 
-        // Pass the order to the view
-        return view('orders.show', ['order' => $order]);
+        return view('User.orders.show', compact('order'));
     }
 }

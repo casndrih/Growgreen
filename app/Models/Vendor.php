@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Storage;
 
 class Vendor extends Authenticatable
 {
@@ -11,6 +12,19 @@ class Vendor extends Authenticatable
         'address', 'withdrawal_type', 'withdrawal_details', 'status', 'reason',
         'verification', 'description',
     ];
+
+    public function getProfilePictureUrlAttribute(): ?string
+    {
+        if (! $this->profile_picture) {
+            return null;
+        }
+
+        if (filter_var($this->profile_picture, FILTER_VALIDATE_URL)) {
+            return $this->profile_picture;
+        }
+
+        return Storage::disk('public')->url($this->profile_picture);
+    }
 
     public function isVendor()
     {

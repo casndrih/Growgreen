@@ -45,7 +45,7 @@
     <meta name="msapplication-TileImage" content="{{ URL::asset('images/favicon/ms-icon-144x144.png') }}">
     <meta name="theme-color" content="#ffffff">
     
-    <link href="{{ URL::asset('/css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     
 </head>
 <body>
@@ -61,9 +61,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.9.6/lottie.min.js" ></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js"></script>
-    <script src="{{ URL::asset('/js/app.js') }}"></script>
-    <script src="{{ URL::asset('/js/user-tabs.js') }}"></script>
-    <script src="{{ URL::asset('js/toast.js') }}"></script>
+    <script src="{{ mix('/js/app.js') }}"></script>
+    <script src="{{ mix('/js/user-tabs.js') }}"></script>
+    <script src="{{ mix('/js/toast.js') }}"></script>
   
     @yield('js')
     

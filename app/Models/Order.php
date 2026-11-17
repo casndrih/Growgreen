@@ -10,6 +10,7 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'vendor_id',
+        'product_id',
         'product_name',
         'quantity',
         'price',
@@ -26,30 +27,31 @@ class Order extends Model
         return $this->belongsTo(Vendor::class);
     }
 
+    public function product()
+    {
+        return $this->belongsTo(FoodProduct::class);
+    }
+
     public function close()
     {
         DB::transaction(function () {
-            // Create a new entry in the order history table
             OrderHistory::create([
                 'user_id' => $this->user_id,
                 'vendor_id' => $this->vendor_id,
                 'product_name' => $this->product_name,
                 'quantity' => $this->quantity,
                 'price' => $this->price,
-                'status' => $this->status,
+                'status' => 'closed',
             ]);
 
-            // Delete the order from the active orders table
             $this->delete();
         });
     }
 
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-
-        static::updating(function ($order) {
-            if ($order->status === 'closed' && $order->isDirty('status')) {
+        static::updated(function (Order $order) {
+            if ($order->status === 'closed' && $order->wasChanged('status')) {
                 $order->close();
             }
         });

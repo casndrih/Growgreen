@@ -7,7 +7,7 @@
 <div class="flex flex-col md:flex-row lg:flex-row items-center mx-4 gap-2 justify-center">
   <div class="max-w-md mx-auto bg-white shadow-sm rounded-md overflow-hidden mb-4 lg:mb-0 lg:mr-4">
     <div class="relative">
-      <img src="{{ $product->image }}" alt="Grocery Product" class="w-full h-40 object-cover">
+      <img src="{{ $product->image_url }}" alt="Grocery Product" class="w-full h-40 object-cover">
       <span class="absolute bottom-2 left-2 bg-lime-500 text-white py-1 px-3 line-clamp-1 text-lg font-medium shadow-lg rounded-full">{{ $product->name }}</span>
     </div>
     <div class="px-4 py-3">
@@ -33,14 +33,13 @@
           Purchase
         </button>
       </div>
-      </form>
     </div>
   </div>
   
   <div class="max-w-md mx-auto bg-white shadow-sm rounded-md overflow-hidden">
     <div class="px-4 py-3">
       <h2 class="text-lg font-medium text-gray-900">Vendor</h2>
-      <img src="{{ $vendor->image }}" alt="Vendor Image" class="w-16 h-16 object-cover rounded-full">
+      <img src="{{ $vendor->profile_picture_url }}" alt="Vendor Image" class="w-16 h-16 object-cover rounded-full">
       <p class="text-lg font-medium text-gray-900">{{ $vendor->name }}</p>
       <p class="text-gray-500">{{ $vendor->description }}</p>
       <p class="text-gray-500">{{ $vendor->address }}</p>
@@ -67,8 +66,11 @@
       quantityInput.val(parseInt(quantityInput.val()) + 1);
     });
 
-    $('.add-to-cart').on('click', function(e) {
-      e.preventDefault();
+    function addCurrentProductToCart(onSuccess) {
+      @guest
+      window.location.href = '{{ route('login') }}';
+      return;
+      @endguest
       const productID = $('input[name="product_id"]').val();
       const quantity = $('.quantity-input').val();
 
@@ -81,19 +83,35 @@
           quantity: quantity
         },
         success: function(response) {
-          showToast('Successfully added to cart');
-          console.log(response); // Handle the success response here
+          showToast(response.message || 'Successfully added to cart');
+          if (typeof onSuccess === 'function') onSuccess();
         },
-        error: function(xhr, status, error) {
-          showToast('Failed to add to cart');
-          console.error(error); // Handle the error here
+        error: function(xhr) {
+          const message = xhr.responseJSON?.message || 'Unable to add this item to your cart.';
+          showToast(message);
         }
+      });
+    }
+
+    $('.add-to-cart').on('click', function(e) {
+      e.preventDefault();
+      addCurrentProductToCart();
+    });
+
+    $('.purchase').on('click', function(e) {
+      e.preventDefault();
+      addCurrentProductToCart(function() {
+        window.location.href = '{{ route('cart.index') }}';
       });
     });
 
     function showToast(message) {
-      const toastContainer = $('#toast-container');
-      const toast = $('<div class="toast">' + message + '</div>');
+      let toastContainer = $('#toast-container');
+      if (!toastContainer.length) {
+        toastContainer = $('<div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2"></div>').appendTo('body');
+      }
+
+      const toast = $('<div class="rounded-lg bg-gray-900 px-4 py-3 text-sm font-medium text-white shadow-lg"></div>').text(message);
       toastContainer.append(toast);
 
       setTimeout(function() {
