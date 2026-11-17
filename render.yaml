@@ -26,7 +26,9 @@ services:
       - key: APP_NAME
         value: Growgreen
       - key: APP_URL
-        value: https://growgreen.onrender.com
+        value: https://growgreen-b8fr.onrender.com
+      - key: APP_KEY
+        generateValue: true
       - key: LOG_LEVEL
         value: warning
       - key: DB_CONNECTION
